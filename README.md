@@ -5,9 +5,9 @@ Shared [Polymer](https://www.polymer-project.org/1.0/)-based behaviors and modul
 
 ## Installation
 
-`d2l-polymer-siren-behaviors` can be installed from npm:
+`d2l-polymer-siren-behaviors` can be installed from bower:
 ```shell
-npm install Brightspace/polymer-siren-behaviors
+bower install Brightspace/polymer-siren-behaviors
 ```
 
 ## Usage
@@ -16,7 +16,7 @@ Include the [webcomponents.js](http://webcomponents.org/polyfills/) "lite" polyf
 
 ```html
 <head>
-	<script src="../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+	<script src="../webcomponentsjs/webcomponents-lite.js"></script>
 </head>
 ```
 
