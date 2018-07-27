@@ -1,0 +1,93 @@
+<link rel="import" href="entity-store.html">
+<link rel="import" href="../../d2l-fastdom-import/fastdom.html">
+
+<script>
+	// 'use strict';
+
+	window.D2L = window.D2L || {};
+	window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
+	window.D2L.PolymerBehaviors.Siren = window.D2L.PolymerBehaviors.Siren || {};
+
+	/*
+	* Behavior for fetching an entity when an href and token a present
+	* @polymerBehavior
+	*/
+	D2L.PolymerBehaviors.Siren.EntityBehavior = {
+		properties: {
+			/**
+			 * The href for this siren entity
+			 */
+			href: {
+				type: String,
+				reflectToAttribute: true
+			},
+
+			/**
+			 * The user access token
+			 */
+			token: {
+				type: String,
+			},
+
+			/**
+			 * The fetched siren entity
+			 */
+			entity: {
+				type: Object,
+				value: null,
+				notify: true,
+				observer: '_onEntityChanged',
+			}
+		},
+
+		observers: [
+			'_fetchEntity(href, token)'
+		],
+
+		ready: function() {
+			this._entityChangedHandler = this._entityChanged.bind(this);
+		},
+
+		detached: function() {
+			if (this.removeListener) {
+				this.removeListener();
+			}
+		},
+
+		_fetchEntity: function(href, token) {
+			if (!href || typeof token !== 'string') {
+				return;
+			}
+			if (this.removeListener) {
+				this.removeListener();
+			}
+			this.removeListener = window.D2L.Siren.EntityStore.addListener(href, token, this._entityChangedHandler);
+			var entity = window.D2L.Siren.EntityStore.fetch(href, token);
+			if (entity.status !== 'fetching') {
+				// Allows class/mixin to override _entityChanged
+				this._entityChanged(entity.entity);
+			}
+		},
+
+		_entityChanged: function(entity, error) {
+			debugger;
+			if (!error) {
+				this.entity = entity;
+				this.fire('d2l-siren-entity-changed', { entity: entity });
+			} else {
+				this.fire('d2l-siren-entity-error', { error: error });
+			}
+		},
+
+		_onEntityChanged: function(entity, oldEntity) {
+			// default empty implementation
+		},
+
+		_getSelfLink: function(entity) {
+			if (entity) {
+				return entity.href || (entity.hasLinkByRel('self') ? entity.getLinkByRel('self').href : '');
+			}
+			return '';
+		}
+	};
+</script>
