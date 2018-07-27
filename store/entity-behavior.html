@@ -70,7 +70,6 @@
 		},
 
 		_entityChanged: function(entity, error) {
-			debugger;
 			if (!error) {
 				this.entity = entity;
 				this.fire('d2l-siren-entity-changed', { entity: entity });
