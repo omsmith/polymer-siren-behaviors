@@ -1,0 +1,85 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="./entity-loading-behavior.html">
+<link rel="import" href="../d2l-fastdom-import/fastdom.html">
+
+<dom-module id="siren-entity-loading">
+	<template strip-whitespace>
+		<style>
+			:host {
+				display: block;
+				position: relative;
+				min-height: 3rem;
+			}
+			div {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				background-color: white;
+				border: 0;
+				opacity: 0;
+				max-height: 0;
+				transition: opacity 400ms ease-out, max-height 400ms ease-out;
+			}
+
+			div.show {
+				max-height: none;
+				opacity: 1;
+			}
+
+			.loading {
+				justify-content: center;
+				position: absolute;
+				width: 100%;
+			}
+		</style>
+
+		<div class="loading show"><slot name="loading"></slot></div>
+		<div class="error"><slot name="error"></slot></div>
+		<div class="fetched"><slot></slot></div>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'siren-entity-loading',
+
+			behaviors: [
+				D2L.PolymerBehaviors.Siren.EntityLoadingBehavior
+			],
+
+			observers: [
+				'_transition(loading, error, fetched)'
+			],
+
+			_transition: function(loading, error, fetched) {
+				this._transitionElement(this.$$('.loading'), loading ? 10 : null);
+				this._transitionElement(this.$$('.error'), error ? 10 : null);
+				this._transitionElement(this.$$('.fetched'), fetched ? 10 : null);
+			},
+
+			_transitionElement: function(element, maxHeightRem) {
+				if (maxHeightRem) {
+					fastdom.mutate(function() {
+						element.style.maxHeight = maxHeightRem + 'rem';
+						element.classList.add('show');
+					});
+				} else {
+					fastdom.mutate(function() {
+						element.style.maxHeight = '0px';
+						element.classList.remove('show');
+					});
+				}
+
+				// when the next css transition finishes (which should be the one we just triggered)
+				element.addEventListener('transitionend', function() {
+					// remove this event listener so it only gets triggered once
+					element.removeEventListener('transitionend', arguments.callee);
+
+					// remove "max-height" from the element's inline styles, so it can return to its initial value
+					fastdom.mutate(function() {
+						element.style.maxHeight = null;
+					});
+				});
+			}
+		});
+	</script>
+</dom-module>
