@@ -1,0 +1,71 @@
+<link rel="import" href="./store/entity-behavior.html">
+<link rel="import" href="./store/entity-store.html">
+
+<script>
+	// 'use strict';
+
+	window.D2L = window.D2L || {};
+	window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
+	window.D2L.PolymerBehaviors.Siren = window.D2L.PolymerBehaviors.Siren || {};
+
+	/*
+	* @polymerBehavior
+	*/
+	D2L.PolymerBehaviors.Siren.EntityLoadingBehaviorImpl = {
+		properties: {
+			loading: {
+				type: Boolean,
+				value: true
+			},
+			error: {
+				type: Boolean,
+				value: false
+			},
+			fetched: {
+				type: Boolean,
+				value: false
+			}
+		},
+
+		ready: function() {
+			this._boundUpdateLoadingState = this._updateLoadingState.bind(this);
+		},
+
+		attached: function() {
+			this.addEventListener('d2l-siren-entity-error', this._boundUpdateLoadingState);
+			this.addEventListener('d2l-siren-entity-changed', this._boundUpdateLoadingState);
+		},
+
+		detached: function() {
+			this.removeEventListener('d2l-siren-entity-error', this._boundUpdateLoadingState);
+			this.removeEventListener('d2l-siren-entity-changed', this._boundUpdateLoadingState);
+		},
+
+		_updateLoadingState: function() {
+			var entity = window.D2L.Siren.EntityStore.fetch(this.href, this.token);
+			switch (entity.status) {
+				case 'error':
+					this.error = true;
+					this.loading = false;
+					this.fetched = false;
+					break;
+				case 'fetching':
+					this.error = false;
+					this.loading = true;
+					this.fetched = false;
+					break;
+				default:
+					this.error = false;
+					this.loading = false;
+					this.fetched = true;
+					break;
+			}
+		}
+	};
+
+	/** @polymerBehavior */
+	D2L.PolymerBehaviors.Siren.EntityLoadingBehavior = [
+		D2L.PolymerBehaviors.Siren.EntityBehavior,
+		D2L.PolymerBehaviors.Siren.EntityLoadingBehaviorImpl
+	];
+</script>
