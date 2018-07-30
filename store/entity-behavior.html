@@ -36,6 +36,11 @@
 				value: null,
 				notify: true,
 				observer: '_onEntityChanged',
+			},
+
+			_entityChangedHandler: {
+				type: Object,
+				value: function() { return this._entityChanged.bind(this); }
 			}
 		},
 
