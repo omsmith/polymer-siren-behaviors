@@ -16,7 +16,9 @@ Include the [webcomponents.js](http://webcomponents.org/polyfills/) "lite" polyf
 
 ```html
 <head>
-	<script src="../webcomponentsjs/webcomponents-lite.js"></script>
+	<link rel="import" href="../d2l-polymer-siren-behaviors/store/entity-behavior.html">
+	<!-- requires URL polyfill for IE11 -->
+	<link rel="import" href="../d2l-polymer-siren-behaviors/store/siren-action-behavior.html">
 </head>
 ```
 
