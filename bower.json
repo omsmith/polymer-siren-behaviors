@@ -14,7 +14,8 @@
     "demo"
   ],
   "dependencies": {
-    "d2l-fetch": "Brightspace/d2l-fetch#^1.8.0"
+    "d2l-fetch": "Brightspace/d2l-fetch#^1.8.0",
+    "d2l-fastdom-import": "Brightspace/fastdom-import#^1.0.2"
   },
   "devDependencies": {
     "iron-component-page": "^2.0.0",
