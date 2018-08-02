@@ -75,43 +75,6 @@
 			this._invalidationListeners.delete(listener);
 		},
 
-		fetch: function(entityId, token, bypassCache) {
-			const lowerCaseToken = token.toLowerCase();
-			const lowerCaseEntityId = entityId.toLowerCase();
-
-			var entity = this._initContainer(this._store, entityId, token);
-			if (!entity || bypassCache) {
-				this._store.get(lowerCaseToken).set(lowerCaseEntityId, { 'status': 'fetching', 'entity': null });
-
-				// var headers = new Headers();
-				// headers.set('Authorization', `Bearer ${token}`);
-				// if (bypassCache) {
-				// 	headers.set('pragma', 'no-cache');
-				// 	headers.set('cache-control', 'no-cache');
-				// }
-
-				// This call is required because FetchSirenEntityBehavior is now
-				// assumes it is uses as a true behavior rather than as a 'lib',
-				// which is how we were previously using it. Need to revisit.
-				D2L.PolymerBehaviors.FetchSirenEntityBehavior.registered();
-				D2L.PolymerBehaviors.FetchSirenEntityBehavior._fetchEntityWithToken(
-					entityId,
-					function() { return Promise.resolve(token); }
-				).then(function(entity) {
-					this.update(entityId, token, entity);
-					if (bypassCache) {
-						this._invalidationListeners.forEach(function(listener) {
-							listener(entityId, token, entity);
-						});
-					}
-				}.bind(this))
-					.catch(function(err) {
-						this.setError(entityId, token, err);
-					}.bind(this));
-			}
-			return this._store.get(lowerCaseToken).get(lowerCaseEntityId);
-		},
-
 		// This newer version of fetch uses d2l-fetch directly so we can set
 		// appropriate headers to bypass caching done by the d2l-fetch middleware chain
 		// The intention is to replace the fetch implementation that uses d2l-fetch-siren-entity-behavior with this
@@ -120,7 +83,7 @@
 		// It is also now returning a promise so that the siren-action-behavior can co-ordinate
 		// updating the UI more consistently when dependent entities change as a result of Siren
 		// actions.
-		fetch2: function(entityId, token, bypassCache) {
+		fetch: function(entityId, token, bypassCache) {
 			const lowerCaseToken = token.toLowerCase();
 			const lowerCaseEntityId = entityId.toLowerCase();
 
@@ -128,7 +91,7 @@
 			if (!entity || bypassCache) {
 
 				var headers = new Headers();
-				headers.set('Authorization', 'Bearer ' + token);
+				token && headers.set('Authorization', 'Bearer ' + token);
 
 				if (bypassCache) {
 					headers.set('pragma', 'no-cache');

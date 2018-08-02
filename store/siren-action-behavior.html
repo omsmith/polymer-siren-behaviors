@@ -15,8 +15,11 @@
 			var fields;
 			if (action.method === 'GET' || action.method === 'HEAD') {
 				fields = url.searchParams;
+			// Disable URLSearchParams until they are fully supported (i.e. Edge)
+			/*
 			} else if (window.URLSearchParams && action.type === 'application/x-www-form-urlencoded') {
 				fields = new URLSearchParams();
+			*/
 			} else {
 				fields = new FormData();
 			}
