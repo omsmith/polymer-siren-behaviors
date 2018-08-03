@@ -65,8 +65,8 @@
 			if (this.removeListener) {
 				this.removeListener();
 			}
-			this.removeListener = window.D2L.Rubric.EntityStore.addListener(href, token, this._entityChangedHandler);
-			window.D2L.Rubric.EntityStore.fetch(href, token);
+			this.removeListener = window.D2L.Siren.EntityStore.addListener(href, token, this._entityChangedHandler);
+			window.D2L.Siren.EntityStore.fetch(href, token);
 		},
 
 		_entityChanged: function(entity, error) {
