@@ -42,24 +42,26 @@
 		},
 
 		_updateLoadingState: function() {
-			var entity = window.D2L.Siren.EntityStore.fetch(this.href, this.token);
-			switch (entity.status) {
-				case 'error':
-					this.error = true;
-					this.loading = false;
-					this.fetched = false;
-					break;
-				case 'fetching':
-					this.error = false;
-					this.loading = true;
-					this.fetched = false;
-					break;
-				default:
-					this.error = false;
-					this.loading = false;
-					this.fetched = true;
-					break;
-			}
+			window.D2L.Siren.EntityStore.fetch(this.href, this.token)
+				.then(function(entity) {
+					switch (entity.status) {
+						case 'error':
+							this.error = true;
+							this.loading = false;
+							this.fetched = false;
+							break;
+						case 'fetching':
+							this.error = false;
+							this.loading = true;
+							this.fetched = false;
+							break;
+						default:
+							this.error = false;
+							this.loading = false;
+							this.fetched = true;
+							break;
+					}
+				}.bind(this));
 		}
 	};
 

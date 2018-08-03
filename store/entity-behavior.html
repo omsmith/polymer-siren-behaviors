@@ -71,8 +71,10 @@
 
 		_entityChanged: function(entity, error) {
 			if (!error) {
-				this.entity = entity;
-				this.fire('d2l-siren-entity-changed', { entity: entity });
+				if (entity !== this.entity) {
+					this.entity = entity;
+					this.fire('d2l-siren-entity-changed', { entity: entity });
+				}
 			} else {
 				this.fire('d2l-siren-entity-error', { error: error });
 			}
