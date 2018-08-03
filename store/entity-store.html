@@ -99,13 +99,8 @@
 
 				var request = window.d2lfetch.fetch(entityId, {
 					headers: headers
-				});
-				this._store.get(lowerCaseToken).set(lowerCaseEntityId, {
-					status: 'fetching',
-					entity: null,
-					request: request
-				});
-				return request.then(function(response) {
+				})
+				.then(function(response) {
 					if (response.ok) {
 						return response.json();
 					}
@@ -125,10 +120,18 @@
 						this.setError(entityId, token, err);
 						return this._store.get(lowerCaseToken).get(lowerCaseEntityId);
 					}.bind(this));
+
+				this._store.get(lowerCaseToken).set(lowerCaseEntityId, {
+					status: 'fetching',
+					entity: null,
+					request: request
+				});
+
+				return request;
 			}
 
 			if (entity.request) {
-				return request;
+				return entity.request;
 			} else {
 				return new Promise(function(resolve) {
 					this._notify(lowerCaseEntityId, lowerCaseToken, entity.entity);
