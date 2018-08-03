@@ -15,7 +15,8 @@
   ],
   "dependencies": {
     "d2l-fetch": "Brightspace/d2l-fetch#^1.8.0",
-    "d2l-fastdom-import": "Brightspace/fastdom-import#^1.0.2"
+    "d2l-fastdom-import": "Brightspace/fastdom-import#^1.0.2",
+    "siren-parser-import": "Brightspace/siren-parser-import#^7.0.0"
   },
   "devDependencies": {
     "iron-component-page": "^2.0.0",
