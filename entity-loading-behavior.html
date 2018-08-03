@@ -61,6 +61,11 @@
 							this.fetched = true;
 							break;
 					}
+				}.bind(this))
+				.catch(function(error) {
+					this.error = true;
+					this.loading = false;
+					this.fetched = false;
 				}.bind(this));
 		}
 	};

@@ -12,13 +12,16 @@
 			}
 			div {
 				display: flex;
-				width: auto;
 				flex-direction: row;
 				justify-content: space-between;
 				border: 0;
 				opacity: 0;
 				max-height: 0;
 				transition: opacity 400ms ease-out, max-height 400ms ease-out;
+			}
+
+			div.hidden {
+				display: none;
 			}
 
 			div.show {
@@ -30,17 +33,22 @@
 				display: block;
 				justify-content: center;
 				position: absolute;
+				width: 100%;
 			}
 		</style>
 
 		<div class="loading show"><slot name="loading"></slot></div>
-		<div class="error"><slot name="error"></slot></div>
-		<div class="fetched"><slot></slot></div>
+		<div class="error hidden"><slot name="error"></slot></div>
+		<div class="fetched hidden"><slot></slot></div>
 	</template>
 
 	<script>
 		Polymer({
 			is: 'siren-entity-loading',
+
+			properties: {
+				maxHeight: Number
+			},
 
 			behaviors: [
 				D2L.PolymerBehaviors.Siren.EntityLoadingBehavior
@@ -51,23 +59,23 @@
 			],
 
 			_transition: function(loading, error, fetched) {
-				this._transitionElement(this.$$('.loading'), loading ? 10 : null);
-				this._transitionElement(this.$$('.error'), error ? 10 : null);
-				this._transitionElement(this.$$('.fetched'), fetched ? 10 : null);
+				var maxHeight = this.maxHeight || 10;
+				this._transitionElement(this.$$('.loading'), loading ? maxHeight : null);
+				this._transitionElement(this.$$('.error'), error ? maxHeight : null);
+				this._transitionElement(this.$$('.fetched'), fetched ? maxHeight : null);
 			},
 
 			_transitionElement: function(element, maxHeightRem) {
-				if (maxHeightRem) {
-					fastdom.mutate(function() {
+				fastdom.mutate(function() {
+					if (maxHeightRem) {
 						element.style.maxHeight = maxHeightRem + 'rem';
 						element.classList.add('show');
-					});
-				} else {
-					fastdom.mutate(function() {
+					} else {
 						element.style.maxHeight = '0px';
 						element.classList.remove('show');
-					});
-				}
+					}
+					element.classList.remove('hidden');
+				});
 
 				// when the next css transition finishes (which should be the one we just triggered)
 				element.addEventListener('transitionend', function() {
