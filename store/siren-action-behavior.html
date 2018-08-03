@@ -15,8 +15,11 @@
 			var fields;
 			if (action.method === 'GET' || action.method === 'HEAD') {
 				fields = url.searchParams;
+			// Disable URLSearchParams until they are fully supported (i.e. Edge)
+			/*
 			} else if (window.URLSearchParams && action.type === 'application/x-www-form-urlencoded') {
 				fields = new URLSearchParams();
+			*/
 			} else {
 				fields = new FormData();
 			}
@@ -143,7 +146,7 @@
 					var linkRequests = [];
 					if (result.links) {
 						result.links.forEach(function(link) {
-							linkRequests.push(window.D2L.Siren.EntityStore.fetch2(link.href, token, true));
+							linkRequests.push(window.D2L.Siren.EntityStore.fetch(link.href, token, true));
 						});
 					}
 					var entity = window.D2L.Hypermedia.Siren.Parse(result.body);
