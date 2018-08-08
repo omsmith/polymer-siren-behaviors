@@ -1,4 +1,4 @@
-/* global suite, test, expect, suiteSetup, suiteTeardown, sinon, stubWhitelist */
+/* global suite, test, fixture, expect, setup, teardown, sinon, stubWhitelist */
 
 'use strict';
 
@@ -6,12 +6,11 @@ suite('entity-store', function() {
 
 	var sandbox;
 
-	suiteSetup(function() {
+	setup(function() {
 		sandbox = sinon.sandbox.create();
-		stubWhitelist();
 	});
 
-	suiteTeardown(function() {
+	teardown(function() {
 		sandbox.restore();
 	});
 
