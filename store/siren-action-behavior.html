@@ -12,9 +12,8 @@
 	D2L.PolymerBehaviors.Siren.SirenActionBehaviorImpl = {
 		getSirenFields: function(action) {
 			var url = new URL(action.href, window.location.origin);
-			var fields;
+			var fields = [];
 			if (action.method === 'GET' || action.method === 'HEAD') {
-				fields = [];
 				for (var param in url.searchParams.entries()) {
 					fields.push({name: param[0], value: param[1]});
 				}
@@ -146,7 +145,7 @@
 				headers.set('Content-Type', action.type);
 				body = JSON.stringify(json);
 			} else if (action.method !== 'GET' && action.method !== 'HEAD') {
-				body = new FormData(fields);
+				body = new FormData(this._sequenceFields(fields));
 			}
 
 			var token = this.token;
