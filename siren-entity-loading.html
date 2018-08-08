@@ -59,22 +59,24 @@
 			],
 
 			_transition: function(loading, error, fetched) {
-				var maxHeight = this.maxHeight || 10;
-				this._transitionElement(this.$$('.loading'), loading ? maxHeight : null);
-				this._transitionElement(this.$$('.error'), error ? maxHeight : null);
-				this._transitionElement(this.$$('.fetched'), fetched ? maxHeight : null);
+				this.async(function() {
+					var maxHeight = this.maxHeight || 10;
+					this._transitionElement(this.$$('.loading'), loading ? maxHeight : null, true);
+					this._transitionElement(this.$$('.error'), error ? maxHeight : null);
+					this._transitionElement(this.$$('.fetched'), fetched ? maxHeight : null);
+				}, 1);
 			},
 
-			_transitionElement: function(element, maxHeightRem) {
+			_transitionElement: function(element, maxHeightRem, hideOnEnd) {
 				fastdom.mutate(function() {
+					element.classList.remove('hidden');
 					if (maxHeightRem) {
 						element.style.maxHeight = maxHeightRem + 'rem';
 						element.classList.add('show');
-					} else {
+					} else if (element.classList.contains('show')) {
 						element.style.maxHeight = '0px';
 						element.classList.remove('show');
 					}
-					element.classList.remove('hidden');
 				});
 
 				// when the next css transition finishes (which should be the one we just triggered)
@@ -85,6 +87,9 @@
 					// remove "max-height" from the element's inline styles, so it can return to its initial value
 					fastdom.mutate(function() {
 						element.style.maxHeight = null;
+						if (hideOnEnd && !element.classList.contains('show')) {
+							element.classList.add('hidden');
+						}
 					});
 				});
 			}
