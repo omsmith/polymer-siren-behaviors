@@ -27,46 +27,53 @@
 			}
 		},
 
+		observers: [
+			'_updateListeners(href, token)'
+		],
+
 		ready: function() {
 			this._boundUpdateLoadingState = this._updateLoadingState.bind(this);
 		},
 
+		_updateListeners: function(href, token) {
+			this.error = false;
+			this.loading = true;
+			this.fetched = false;
+			if (this._oldHref && this._oldToken) {
+				window.D2L.Siren.EntityStore.removeListener(this._oldHref, this._oldToken, this._boundUpdateLoadingState);
+			}
+			this._oldHref = href;
+			this._oldToken = token;
+			if (typeof href === 'string' && typeof token === 'string') {
+				window.D2L.Siren.EntityStore.addListener(href, token, this._boundUpdateLoadingState);
+				window.D2L.Siren.EntityStore.fetch(href, token)
+					.then(function(entity) {
+						this._updateLoadingState(entity);
+					}.bind(this))
+					.catch(function(error) {
+						this._updateLoadingState(null, error);
+					}.bind(this));
+			}
+		},
+
 		attached: function() {
-			this.addEventListener('d2l-siren-entity-error', this._boundUpdateLoadingState);
-			this.addEventListener('d2l-siren-entity-changed', this._boundUpdateLoadingState);
+			this._updateListeners(this.href, this.token);
 		},
 
 		detached: function() {
-			this.removeEventListener('d2l-siren-entity-error', this._boundUpdateLoadingState);
-			this.removeEventListener('d2l-siren-entity-changed', this._boundUpdateLoadingState);
+			this._updateListeners();
 		},
 
-		_updateLoadingState: function() {
-			window.D2L.Siren.EntityStore.fetch(this.href, this.token)
-				.then(function(entity) {
-					switch (entity.status) {
-						case 'error':
-							this.error = true;
-							this.loading = false;
-							this.fetched = false;
-							break;
-						case 'fetching':
-							this.error = false;
-							this.loading = true;
-							this.fetched = false;
-							break;
-						default:
-							this.error = false;
-							this.loading = false;
-							this.fetched = true;
-							break;
-					}
-				}.bind(this))
-				.catch(function() {
-					this.error = true;
-					this.loading = false;
-					this.fetched = false;
-				}.bind(this));
+		_updateLoadingState: function(entity, error) {
+			if (error) {
+				this.error = true;
+				this.loading = false;
+				this.fetched = false;
+			} else if (entity) {
+				this.error = false;
+				this.loading = false;
+				this.fetched = true;
+			}
 		}
 	};
 
