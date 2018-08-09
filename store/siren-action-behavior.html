@@ -22,8 +22,6 @@
 			} else if (window.URLSearchParams && action.type === 'application/x-www-form-urlencoded') {
 				fields = new URLSearchParams();
 			*/
-			} else {
-				fields = [];
 			}
 
 			if (action.fields && action.fields.forEach) {
