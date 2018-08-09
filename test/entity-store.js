@@ -1,4 +1,4 @@
-/* global suite, test, fixture, expect, setup, teardown, sinon, stubWhitelist */
+/* global suite, test, expect, setup, teardown, sinon */
 
 'use strict';
 

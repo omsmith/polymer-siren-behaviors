@@ -150,7 +150,7 @@
 				headers.set('Content-Type', action.type);
 				body = JSON.stringify(json);
 			} else if (action.method !== 'GET' && action.method !== 'HEAD') {
-				body = new FormData(this._sequenceFields(fields));
+				body = this._createFormData(fields);
 			}
 
 			var token = this.token;
