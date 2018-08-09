@@ -45,21 +45,28 @@
 
 			fields = fields || this.getSirenFields(action);
 			if (action.method === 'GET' || action.method === 'HEAD') {
-
-				var params = new URLSearchParams(this._sequenceFields(fields));
+				var params = this._createURLSearchParams(fields);
 				url = new URL(url.pathname + '?' + params.toString(), url.origin);
 			}
 
 			return url;
 		},
 
-		_sequenceFields: function(fields) {
+		_createURLSearchParams: function(fields) {
 			var sequence = [];
 			for (var i = 0; i < fields.length; i++) {
 				var field = fields[i];
 				sequence.push([field.name, field.value]);
 			}
-			return sequence;
+			return new URLSearchParams(sequence);
+		},
+
+		_createFormData: function(fields) {
+			var formData = new FormData();
+			for (var i = 0; i < fields.length; i++) {
+				formData.append(fields[i].name, fields[i].value);
+			}
+			return formData;
 		},
 
 		_appendHiddenFields: function(action, fields) {
