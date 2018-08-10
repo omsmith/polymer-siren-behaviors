@@ -11,6 +11,8 @@
 				min-height: var(--siren-entity-loading-min-height, 3rem);
 				display: flex;
 				flex-direction: column;
+
+				transition: min-height 400ms ease-out;
 			}
 			div {
 				display: flex;
@@ -71,6 +73,9 @@
 
 			_transitionElement: function(element, maxHeightRem, hideOnEnd) {
 				fastdom.mutate(function() {
+					if (hideOnEnd) {
+						self.style.minHeight = null;
+					}
 					element.classList.remove('hidden');
 					if (maxHeightRem) {
 						element.style.maxHeight = maxHeightRem + 'rem';
@@ -80,6 +85,8 @@
 						element.classList.remove('show');
 					}
 				});
+
+				var self = this;
 
 				// when the next css transition finishes (which should be the one we just triggered)
 				element.addEventListener('transitionend', function() {
@@ -91,6 +98,7 @@
 						element.style.maxHeight = null;
 						if (hideOnEnd && !element.classList.contains('show')) {
 							element.classList.add('hidden');
+							self.style.minHeight = 0;
 						}
 					});
 				});
