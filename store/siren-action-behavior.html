@@ -15,16 +15,16 @@
 	D2L.PolymerBehaviors.Siren.SirenActionBehaviorImpl = {
 		getSirenFields: function(action) {
 			var url = new URL(action.href, window.location.origin);
-			var fields;
+			var fields = [];
 			if (action.method === 'GET' || action.method === 'HEAD') {
-				fields = url.searchParams;
+				for (var param in url.searchParams.entries()) {
+					fields.push({name: param[0], value: param[1]});
+				}
 			// Disable URLSearchParams until they are fully supported (i.e. Edge)
 			/*
 			} else if (window.URLSearchParams && action.type === 'application/x-www-form-urlencoded') {
 				fields = new URLSearchParams();
 			*/
-			} else {
-				fields = new FormData();
 			}
 
 			if (action.fields && action.fields.forEach) {
@@ -33,7 +33,7 @@
 						return;
 					}
 					// if the field is specified multiple times, assume it is intentional
-					fields.append(field.name, field.value);
+					fields.push({name: field.name, value: field.value});
 				});
 			}
 			return fields;
@@ -48,17 +48,35 @@
 
 			fields = fields || this.getSirenFields(action);
 			if (action.method === 'GET' || action.method === 'HEAD') {
-				url = new URL(url.pathname + '?' + fields.toString(), url.origin);
+				var params = this._createURLSearchParams(fields);
+				url = new URL(url.pathname + '?' + params.toString(), url.origin);
 			}
 
 			return url;
+		},
+
+		_createURLSearchParams: function(fields) {
+			var sequence = [];
+			for (var i = 0; i < fields.length; i++) {
+				var field = fields[i];
+				sequence.push([field.name, field.value]);
+			}
+			return new URLSearchParams(sequence);
+		},
+
+		_createFormData: function(fields) {
+			var formData = new FormData();
+			for (var i = 0; i < fields.length; i++) {
+				formData.append(fields[i].name, fields[i].value);
+			}
+			return formData;
 		},
 
 		_appendHiddenFields: function(action, fields) {
 			if (action.fields && action.fields.forEach) {
 				action.fields.forEach(function(field) {
 					if (field.type === 'hidden' && field.value !== undefined) {
-						fields.append(field.name, field.value);
+						fields.push({name: field.name, value:field.value});
 					}
 				});
 			}
@@ -125,17 +143,17 @@
 			} else {
 				fields = this.getSirenFields(action);
 			}
-			if (action.method !== 'GET' && action.method !== 'HEAD') {
-				body = fields;
-			}
 
-			if (body && action.type.indexOf('json') !== -1) {
+			if (action.type.indexOf('json') !== -1) {
 				var json = {};
-				body.keys().forEach(function(key) {
-					json[key] = action.getFieldByName(key).value;
-				});
+				for (var i = 0; i < fields.length; i++) {
+					var field = fields[i];
+					json[field.name] = field.value;
+				}
 				headers.set('Content-Type', action.type);
 				body = JSON.stringify(json);
+			} else if (action.method !== 'GET' && action.method !== 'HEAD') {
+				body = this._createFormData(fields);
 			}
 
 			var token = this.token;
