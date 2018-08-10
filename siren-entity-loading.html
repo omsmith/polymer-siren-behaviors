@@ -101,16 +101,13 @@
 							element.classList.add('hidden');
 							self.style.minHeight = 0;
 						}
-					});
-
-					if (element.classList.contains('show') && name) {
-						fastdom.measure(function() {
+						if (element.classList.contains('show') && name) {
 							element.dispatchEvent(new CustomEvent('siren-entity-loading-' + name, {
 								bubbles: true,
 								composed: true
 							}));
-						});
-					}
+						}
+					});
 				});
 			}
 		});
