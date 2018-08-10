@@ -65,13 +65,13 @@
 			_transition: function(loading, error, fetched) {
 				this.async(function() {
 					var maxHeight = this.maxHeight || 10;
-					this._transitionElement(this.$$('.loading'), loading ? maxHeight : null, true);
-					this._transitionElement(this.$$('.error'), error ? maxHeight : null);
-					this._transitionElement(this.$$('.fetched'), fetched ? maxHeight : null);
+					this._transitionElement(this.$$('.loading'), loading ? maxHeight : null, 'loading', true);
+					this._transitionElement(this.$$('.error'), error ? maxHeight : null, 'error');
+					this._transitionElement(this.$$('.fetched'), fetched ? maxHeight : null, 'fetched');
 				}, 1);
 			},
 
-			_transitionElement: function(element, maxHeightRem, hideOnEnd) {
+			_transitionElement: function(element, maxHeightRem, name, hideOnEnd) {
 				fastdom.mutate(function() {
 					if (hideOnEnd) {
 						self.style.minHeight = null;
@@ -101,6 +101,15 @@
 							self.style.minHeight = 0;
 						}
 					});
+
+					if (element.classList.contains('show') && name) {
+						fastdom.measure(function() {
+							element.dispatchEvent(new CustomEvent('siren-entity-loading-' + name, {
+								bubbles: true,
+								composed: true
+							}));
+						});
+					}
 				});
 			}
 		});
