@@ -147,7 +147,7 @@
 
 			this._initContainer(this._store, lowerCaseEntityId, lowerCaseToken);
 			return new Promise(function(resolve) {
-				const entities = this.expand(entity);
+				const entities = this.expand(entityId, entity);
 				entities.forEach(function(entity) {
 					this._store.get(lowerCaseToken).set(entity.key.toLowerCase(), {
 						status: '',
@@ -161,11 +161,16 @@
 			}.bind(this));
 		},
 
-		expand: function(entity) {
+		expand: function(entityId, entity) {
 			const entityIndex = new Set();
 			const expandEntities = [];
 			const entities = [];
 			expandEntities.push(entity);
+			entityIndex.add(entityId);
+			entities.push({
+				key: entityId,
+				value: entity
+			});
 
 			while (expandEntities.length > 0) {
 				const expandEntity = expandEntities.shift();
