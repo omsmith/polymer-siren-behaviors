@@ -42,6 +42,21 @@ suite('entity-store', function() {
 			window.D2L.Siren.EntityStore.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/0.json', '');
 		});
 
+		test('can fetch leaf entity using listener when self link does not match', function(done) {
+			window.D2L.Siren.EntityStore.addListener(
+				'static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/0.json?foo=bar',
+				'',
+				function(entity) {
+					var description = entity && entity.getSubEntityByClass('description').properties.html;
+					expect(description).to.equal('Proper use of grammar');
+					if (!done.done) {
+						done();
+						done.done = true;
+					}
+				});
+			window.D2L.Siren.EntityStore.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/0.json?foo=bar', '');
+		});
+
 		test('can fetch leaf entity using promise', function(done) {
 			var request = window.D2L.Siren.EntityStore.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/0.json', '');
 			request.then(function(entity) {
