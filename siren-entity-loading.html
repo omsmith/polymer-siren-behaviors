@@ -73,27 +73,9 @@
 			},
 
 			_transitionElement: function(element, maxHeightRem, name, hideOnEnd) {
-				fastdom.mutate(function() {
-					if (hideOnEnd) {
-						self.style.minHeight = null;
-					}
-					element.classList.remove('hidden');
-					if (maxHeightRem) {
-						element.style.maxHeight = maxHeightRem + 'rem';
-						element.classList.add('show');
-					} else if (element.classList.contains('show')) {
-						element.style.maxHeight = '0px';
-						element.classList.remove('show');
-					}
-				});
-
 				var self = this;
 
-				// when the next css transition finishes (which should be the one we just triggered)
-				element.addEventListener('transitionend', function() {
-					// remove this event listener so it only gets triggered once
-					element.removeEventListener('transitionend', arguments.callee);
-
+				function onTransitionEnd() {
 					// remove "max-height" from the element's inline styles, so it can return to its initial value
 					fastdom.mutate(function() {
 						element.style.maxHeight = null;
@@ -108,6 +90,22 @@
 							}));
 						}
 					});
+				}
+
+				fastdom.mutate(function() {
+					if (hideOnEnd) {
+						self.style.minHeight = null;
+					}
+					element.classList.remove('hidden');
+					if (maxHeightRem) {
+						element.style.maxHeight = maxHeightRem + 'rem';
+						element.classList.add('show');
+					} else if (element.classList.contains('show')) {
+						element.style.maxHeight = '0px';
+						element.classList.remove('show');
+					}
+
+					setTimeout(onTransitionEnd, 400);
 				});
 			}
 		});
