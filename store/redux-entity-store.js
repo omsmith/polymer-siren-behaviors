@@ -1,6 +1,7 @@
 import './process-env-shim.js';
 import { createStore, applyMiddleware, combineReducers } from '../../redux/src/index.js';
 import thunkMiddleware from '../../redux-thunk/src/index.js';
+//import createLogger from '../../redux-logger/src/index.js';
 import { REQUEST_ENTITY, RECEIVE_ENTITY, ENTITY_ERROR } from './redux-entity-fetch.js';
 import { UPDATE_ENTITY } from './redux-entity-update.js';
 import { CLEAR_STORE } from './redux-clear.js';
@@ -80,5 +81,6 @@ const rootReducer = combineReducers({
 });
 
 export const EntityStore = createStore(rootReducer, applyMiddleware(
-	thunkMiddleware
+	thunkMiddleware/*,
+	createLogger()*/
 ));

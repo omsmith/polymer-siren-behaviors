@@ -31,20 +31,20 @@ function entityError(href, token, error, receivedAt) {
 	};
 }
 
-function dispatchSubEntities(dispatch, entity, token, date) {
+function dispatchSubEntities(dispatch, href, token, entity, date) {
 	if (!entity) {
 		return;
 	}
 	if (entity.links) {
 		const selfLink = entity.links.find(link => link.rel.includes('self'));
-		if (selfLink && selfLink.href) {
+		if (selfLink && selfLink.href && selfLink.href !== href) {
 			dispatch(receiveEntity(selfLink.href, token, entity, date));
 		}
 	}
 	if (!entity.entities) {
 		return;
 	}
-	entity.entities.forEach(entity => dispatchSubEntities(dispatch, entity, token));
+	entity.entities.forEach(entity => dispatchSubEntities(dispatch, null, token, entity, token));
 }
 
 function fetchEntity(href, token, bypassCache) {
@@ -72,7 +72,7 @@ function fetchEntity(href, token, bypassCache) {
 			.then((json) => {
 				const date = Date.now();
 				dispatch(receiveEntity(href, token, json, date));
-				dispatchSubEntities(dispatch, json, token, date);
+				dispatchSubEntities(dispatch, href, token, json, date);
 			})
 			.catch(err => {
 				const date = Date.now();
