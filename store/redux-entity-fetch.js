@@ -49,6 +49,9 @@ function dispatchSubEntities(dispatch, href, token, entity, date) {
 
 function fetchEntity(href, token, bypassCache) {
 	return (dispatch) => {
+		if (!href) {
+			return Promise.reject(new Error('Empty href'));
+		}
 		dispatch(requestEntity(href, token, bypassCache));
 		var headers = new Headers();
 		headers.set('Authorization', `Bearer ${token}`);

@@ -23,9 +23,14 @@ export const EntityBehavior = {
 		 */
 		token: String,
 		/**
-		 * Resultant entity as a JSON object
+		 * The fetched siren entity
 		 */
-		entity: Object,
+		entity: {
+			type: Object,
+			value: null,
+			notify: true,
+			observer: '_onEntityChanged',
+		},
 		/**
 		 * True if entity is loaded. False if not loaded or loading
 		 */
@@ -64,6 +69,9 @@ export const EntityBehavior = {
 	},
 
 	_fetchEntity: function(href, token) {
+		if (!href || typeof token !== 'string') {
+			return;
+		}
 		this.error = false;
 		this.loaded = false;
 		this.loading = true;
@@ -92,6 +100,10 @@ export const EntityBehavior = {
 		this.fetched = true;
 
 		this.fire('d2l-siren-entity-changed', { entity: this.entity });
+	},
+
+	_onEntityChanged: function(/*entity, oldEntity*/) {
+		// default empty implementation
 	},
 
 	_getSelfLink: function(entity) {

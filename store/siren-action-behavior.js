@@ -169,7 +169,10 @@ export const SirenActionBehavior = {
 				return Promise.all(linkRequests).then(function() {
 					return EntityStore.dispatch(updateEntity(url.href, token, entity));
 				})
-					.then(function(entity) {
+					.then(function() {
+						const state = EntityStore.getState();
+						const entitiesByToken = state.entitiesByHref[url.href];
+						const entity = entitiesByToken && entitiesByToken[token];
 						return entity.entity;
 					});
 			});
