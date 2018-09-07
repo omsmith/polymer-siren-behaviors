@@ -84,7 +84,7 @@
 		},
 
 		_fetch: function(href, opts) {
-			var methodTypes = ['POST', 'PUT', 'DELETE'];
+			var methodTypes = ['POST', 'PUT', 'DELETE', 'PATCH'];
 			var sendSaveEvent = methodTypes.indexOf(opts.method) !== -1;
 			var self = this;
 
