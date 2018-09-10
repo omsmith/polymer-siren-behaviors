@@ -100,9 +100,15 @@
 				})
 				.then(function(resp) {
 					if (!resp.ok) {
-						var errMsg = resp.statusText + ' response executing ' + opts.method + ' on ' + href + '.';
-						var error = new Error(errMsg);
-						throw error;
+						return resp.json().then(function(data) {
+							var obj = JSON.parse(data);
+							var errMsg = resp.statusText + ' response executing ' + opts.method + ' on ' + href + '.';
+							throw { object: obj, message: errMsg };
+						})
+						.catch(function(reason) {
+							self.fire('d2l-siren-entity-save-error', { object: reason.object });
+							throw new Error(reason.message);
+						});
 					}
 					var linkHeader = resp.headers ? resp.headers.get('Link') : null;
 					var links;
@@ -122,10 +128,6 @@
 						};
 					});
 				})
-				.catch(function(reason) {
-					self.fire('d2l-siren-entity-save-error', { error: new Error(reason.message) });
-					throw reason;
-				});
 		},
 
 		performSirenAction: function(action, fields) {
