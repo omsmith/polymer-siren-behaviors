@@ -101,14 +101,15 @@
 				.then(function(resp) {
 					if (!resp.ok) {
 						var errMsg = resp.statusText + ' response executing ' + opts.method + ' on ' + href + '.';
-						if (resp.json) {
-							return resp.json().then(function(data) {
-								var obj = JSON.parse(data);
-								throw { object: obj, message: errMsg };
-							})
-						} else {
-							throw new Error(errMsg);
-						}
+						return resp.json().then(function(data) {
+							var obj;
+							try {
+								obj = JSON.parse(data);
+							} catch (e) {
+								throw { string: data, message: errMsg };
+							}
+							throw { json: obj, message: errMsg };
+						})
 					}
 					var linkHeader = resp.headers ? resp.headers.get('Link') : null;
 					var links;
@@ -129,8 +130,8 @@
 					});
 				})
 				.catch(function(reason) {
-					self.fire('d2l-siren-entity-save-error', reason);
-					throw new Error(reason.message);
+					self.fire('d2l-siren-entity-save-error', { error: reason });
+					throw reason;
 				})
 		},
 
