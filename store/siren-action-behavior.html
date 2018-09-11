@@ -100,15 +100,15 @@
 				})
 				.then(function(resp) {
 					if (!resp.ok) {
-						return resp.json().then(function(data) {
-							var obj = JSON.parse(data);
-							var errMsg = resp.statusText + ' response executing ' + opts.method + ' on ' + href + '.';
-							throw { object: obj, message: errMsg };
-						})
-						.catch(function(reason) {
-							self.fire('d2l-siren-entity-save-error', { object: reason.object });
-							throw new Error(reason.message);
-						});
+						var errMsg = resp.statusText + ' response executing ' + opts.method + ' on ' + href + '.';
+						if (resp.json) {
+							return resp.json().then(function(data) {
+								var obj = JSON.parse(data);
+								throw { object: obj, message: errMsg };
+							})
+						} else {
+							throw new Error(errMsg);
+						}
 					}
 					var linkHeader = resp.headers ? resp.headers.get('Link') : null;
 					var links;
@@ -127,6 +127,10 @@
 							links: links
 						};
 					});
+				})
+				.catch(function(reason) {
+					self.fire('d2l-siren-entity-save-error', reason);
+					throw new Error(reason.message);
 				})
 		},
 
