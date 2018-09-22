@@ -102,14 +102,10 @@
 					if (!resp.ok) {
 						var errMsg = resp.statusText + ' response executing ' + opts.method + ' on ' + href + '.';
 						return resp.json().then(function(data) {
-							var obj;
-							try {
-								obj = JSON.parse(data);
-							} catch (e) {
-								throw { string: data, message: errMsg };
-							}
-							throw { json: obj, message: errMsg };
-						})
+							throw { json: data, message: errMsg };
+						}, function(data) {
+							throw { string: data, message: errMsg };
+						});
 					}
 					var linkHeader = resp.headers ? resp.headers.get('Link') : null;
 					var links;
