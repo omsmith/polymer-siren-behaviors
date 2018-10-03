@@ -13,8 +13,12 @@
 			var taskRunner;
 			var promise = new Promise(function(resolve, reject) {
 				taskRunner = function() {
-					var result = task();
-					result.then(resolve).catch(reject);
+					try {
+						var result = task();
+						result.then(resolve).catch(reject);
+					} catch (e) {
+						reject(e);
+					}
 				};
 			});
 			this.queueEnd.then(taskRunner).catch(taskRunner);

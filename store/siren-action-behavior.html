@@ -132,11 +132,11 @@
 				});
 		},
 
-		performSirenAction: function(action, fields) {
+		performSirenAction: function(action, fields, immediate) {
 			var self = this;
-			return window.D2L.Siren.ActionQueue.enqueue(function() {
+			return !immediate ? window.D2L.Siren.ActionQueue.enqueue(function() {
 				return self._performSirenAction(action, fields);
-			});
+			}) : self._performSirenAction(action, fields);
 		},
 
 		_performSirenAction: function(action, fields) {
