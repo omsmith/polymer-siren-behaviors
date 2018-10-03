@@ -14,7 +14,12 @@
 			var promise = new Promise(function(resolve, reject) {
 				taskRunner = function() {
 					var result = task();
-					result.then(resolve).catch(reject);
+					// result.then(resolve).catch(reject);
+					return result.then(function(res) {
+						resolve(res);
+					}).catch(function(err) {
+						reject(err);
+					});
 				};
 			});
 			this.queueEnd.then(taskRunner).catch(taskRunner);
