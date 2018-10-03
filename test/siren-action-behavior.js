@@ -18,6 +18,14 @@ suite('siren-action-behavior', function() {
 		]
 	};
 
+	var testAction2 = 	{
+		'name': 'delete-item',
+		'title': 'Delete Item',
+		'method': 'DELETE',
+		'href': 'http://api.x.io/orders/42/items/5',
+		'type': 'application/x-www-form-urlencoded'
+	};
+
 	var testEntity = { // example from https://github.com/kevinswiber/siren
 		'class': [ 'order' ],
 		'properties': {
@@ -107,6 +115,67 @@ suite('siren-action-behavior', function() {
 				expect(request.method).to.equal('POST');
 			});
 			return result;
+		});
+	});
+
+	suite('enqueue action unit tests', function() {
+		var res1, res2;
+		var fetchStub;
+		setup(function() {
+			fetchStub = sinon.stub(window.d2lfetch, 'fetch');
+			res1 = new window.Response(JSON.stringify(testEntity), {
+				status: 200,
+				headers: {
+					'Content-type': 'application/json'
+				},
+			});
+			res2 = new window.Response(null, {
+				status: 204
+			});
+		});
+
+		teardown(function() {
+			fetchStub.restore();
+		});
+
+		test('enqueues actions', function() {
+			fetchStub.withArgs('http://api.x.io/orders/42/items').returns(
+				new Promise(function(resolve) {
+					setTimeout(function() {
+						resolve(res1);
+					});
+				})
+			);
+			fetchStub.withArgs('http://api.x.io/orders/42/items/5').returns(
+				new Promise(function(resolve) {
+					resolve(res2);
+				})
+			);
+			var firstCall = element.performSirenAction(testAction).then(function() {
+				expect(fetchStub.callCount).to.equal(1);
+			});
+			element.performSirenAction(testAction2);
+			return firstCall;
+		});
+
+		test('immediate actions skip queue', function() {
+			fetchStub.withArgs('http://api.x.io/orders/42/items').returns(
+				new Promise(function(resolve) {
+					setTimeout(function() {
+						resolve(res1);
+					});
+				})
+			);
+			fetchStub.withArgs('http://api.x.io/orders/42/items/5').returns(
+				new Promise(function(resolve) {
+					resolve(res2);
+				})
+			);
+			var firstCall = element.performSirenAction(testAction).then(function() {
+				expect(fetchStub.callCount).to.equal(2);
+			});
+			element.performSirenAction(testAction2, null, true);
+			return firstCall;
 		});
 	});
 });

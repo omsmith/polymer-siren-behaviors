@@ -1,0 +1,31 @@
+<script>
+(function() {
+	'use strict';
+
+	window.D2L = window.D2L || {};
+	window.D2L.Siren = window.D2L.Siren || {};
+
+	window.D2L.Siren.ActionQueue = {
+		queueEnd: Promise.resolve(),
+
+		// Task needs to be a function that returns a promise
+		enqueue: function(task) {
+			var taskRunner;
+			var promise = new Promise(function(resolve, reject) {
+				taskRunner = function() {
+					try {
+						var result = task();
+						result.then(resolve).catch(reject);
+					} catch (e) {
+						reject(e);
+					}
+				};
+			});
+			this.queueEnd.then(taskRunner).catch(taskRunner);
+			this.queueEnd = promise;
+			return promise;
+		}
+	};
+})();
+
+</script>
