@@ -69,6 +69,24 @@ suite('entity-store', function() {
 			});
 		});
 
+		test('get entity returns null if not in store', function() {
+			var entity = window.D2L.Siren.EntityStore.get('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/UNKNOWN1.json', '');
+			expect(entity).to.be.null;
+		});
+
+		test('get entity returns entity sync', function(done) {
+			var request = window.D2L.Siren.EntityStore.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/0.json', '');
+			request.then(function() {
+				var entity = window.D2L.Siren.EntityStore.get('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/0.json', '');
+				var description = entity && entity.getSubEntityByClass('description').properties.html;
+				expect(description).to.equal('Proper use of grammar');
+				if (!done.done) {
+					done();
+					done.done = true;
+				}
+			});
+		});
+
 		test('handles entity error using listener', function(done) {
 			window.D2L.Siren.EntityStore.addListener(
 				'static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/UNKNOWN1.json',
@@ -124,19 +142,6 @@ suite('entity-store', function() {
 					}
 				});
 			window.D2L.Siren.EntityStore.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria.json', '');
-		});
-
-		test('expands singleton non-resource entities', function(done) {
-			window.D2L.Siren.EntityStore.fetch('static-data/199.json', '').then(function() {
-				var entity = window.D2L.Siren.EntityStore.get(
-					'https://api.brightspace.com/rels/richtext-editor-config',
-					'');
-				expect(entity.class).to.include.members(['richtext-editor-config']);
-				if (!done.done) {
-					done();
-					done.done = true;
-				}
-			});
 		});
 
 		suite('link header parse', function() {

@@ -190,22 +190,13 @@
 					expandEntities.push(entity);
 				});
 
-				if (!expandEntity.href) {
-					if (expandEntity.hasLinkByRel('self')) {
-						const href = expandEntity.getLinkByRel('self').href.toLowerCase();
-						if (!entityIndex.has(href)) {
-							entityIndex.add(href);
-							entities.push({
-								key: href,
-								value: expandEntity
-							});
-						}
-					} else if (expandEntity.hasClass('singleton')) {
-						(expandEntity.rel || []).forEach(function(rel) {
-							entities.push({
-								key: rel,
-								value: expandEntity
-							});
+				if (!expandEntity.href && expandEntity.hasLinkByRel('self')) {
+					const href = expandEntity.getLinkByRel('self').href.toLowerCase();
+					if (!entityIndex.has(href)) {
+						entityIndex.add(href);
+						entities.push({
+							key: href,
+							value: expandEntity
 						});
 					}
 				}
