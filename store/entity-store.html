@@ -141,6 +141,18 @@
 			}
 		},
 
+		get: function(entityId, token) {
+			const lowerCaseToken = token.toLowerCase();
+			const lowerCaseEntityId = entityId.toLowerCase();
+
+			var entity = this._initContainer(this._store, entityId, token);
+			if (entity) {
+				return entity.entity;
+			} else {
+				return null;
+			}
+		},
+
 		update: function(entityId, token, entity) {
 			const lowerCaseToken = token.toLowerCase();
 			const lowerCaseEntityId = entityId.toLowerCase();
