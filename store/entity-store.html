@@ -141,6 +141,18 @@
 			}
 		},
 
+		get: function(entityId, token) {
+			const lowerCaseToken = token.toLowerCase();
+			const lowerCaseEntityId = entityId.toLowerCase();
+
+			var entity = this._initContainer(this._store, entityId, token);
+			if (entity) {
+				return entity.entity;
+			} else {
+				return null;
+			}
+		},
+
 		update: function(entityId, token, entity) {
 			const lowerCaseToken = token.toLowerCase();
 			const lowerCaseEntityId = entityId.toLowerCase();
@@ -178,13 +190,22 @@
 					expandEntities.push(entity);
 				});
 
-				if (!expandEntity.href && expandEntity.hasLinkByRel('self')) {
-					const href = expandEntity.getLinkByRel('self').href.toLowerCase();
-					if (!entityIndex.has(href)) {
-						entityIndex.add(href);
-						entities.push({
-							key: href,
-							value: expandEntity
+				if (!expandEntity.href) {
+					if (expandEntity.hasLinkByRel('self')) {
+						const href = expandEntity.getLinkByRel('self').href.toLowerCase();
+						if (!entityIndex.has(href)) {
+							entityIndex.add(href);
+							entities.push({
+								key: href,
+								value: expandEntity
+							});
+						}
+					} else if (expandEntity.hasClass('singleton')) {
+						(expandEntity.rel || []).forEach(function(rel) {
+							entities.push({
+								key: rel,
+								value: expandEntity
+							});
 						});
 					}
 				}

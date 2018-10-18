@@ -126,6 +126,19 @@ suite('entity-store', function() {
 			window.D2L.Siren.EntityStore.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria.json', '');
 		});
 
+		test('expands singleton non-resource entities', function(done) {
+			window.D2L.Siren.EntityStore.fetch('static-data/199.json', '').then(function() {
+				var entity = window.D2L.Siren.EntityStore.get(
+					'https://api.brightspace.com/rels/richtext-editor-config',
+					'');
+				expect(entity.class).to.include.members(['richtext-editor-config']);
+				if (!done.done) {
+					done();
+					done.done = true;
+				}
+			});
+		});
+
 		suite('link header parse', function() {
 
 			test('can parse single link header', function() {
