@@ -25,7 +25,7 @@
 			 * The user access token
 			 */
 			token: {
-				type: String,
+				type: Object,
 			},
 
 			/**
@@ -64,13 +64,16 @@
 		},
 
 		_fetchEntity: function(href, token) {
-			if (!href || typeof token !== 'string') {
+			if (!href || (typeof token !== 'string' && typeof token !== 'function')) {
 				return;
 			}
 			if (this.removeListener) {
 				this.removeListener();
 			}
-			this.removeListener = window.D2L.Siren.EntityStore.addListener(href, token, this._entityChangedHandler);
+			window.D2L.Siren.EntityStore.addListener(href, token, this._entityChangedHandler)
+				.then( function (removeListener) {
+					this.removeListener = removeListener;
+				}.bind(this));
 			window.D2L.Siren.EntityStore.fetch(href, token);
 		},
 
