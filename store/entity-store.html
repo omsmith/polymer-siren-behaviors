@@ -93,7 +93,8 @@
 				}
 
 				// Avoid parse work if we've already done it
-				if( typeof tokenValue === 'object' && tokenValue.cacheKey && tokenValue.tokenValue ) {
+				if( typeof tokenValue === 'object' && tokenValue.hasOwnProperty('cacheKey')
+					&& tokenValue.hasOwnProperty('tokenValue')) {
 					return tokenValue;
 				}
 
