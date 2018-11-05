@@ -1,0 +1,34 @@
+{
+    "class": ["collection"],
+    "entities": [{
+        "rel": ["https://api.brightspace.com/rel/cache-primer"],
+        "class": ["example"],
+        "properties": {
+            "item": 0
+        },
+        "links": [{
+            "rel": ["collection"],
+            "href": "static-data/simple-collection/collection.json"
+        }, {
+            "rel": ["self"],
+            "href": "static-data/simple-collection/items/0.json"
+        }]
+    }, {
+        "rel": ["https://api.brightspace.com/rel/cache-primer"],
+        "class": ["example"],
+        "properties": {
+            "item": 1
+        },
+        "links": [{
+            "rel": ["collection"],
+            "href": "static-data/simple-collection/collection.json"
+        }, {
+            "rel": ["self"],
+            "href": "static-data/simple-collection/items/1.json"
+        }]
+    }],
+    "links": [{
+        "rel": ["self"],
+        "href": "static-data/simple-collection/cache-primer.json"
+    }]
+}

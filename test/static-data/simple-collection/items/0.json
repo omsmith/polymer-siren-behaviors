@@ -1,0 +1,13 @@
+{
+    "class": ["example"],
+    "properties": {
+        "item": 0
+    },
+    "links": [{
+        "rel": ["collection"],
+        "href": "static-data/simple-collection/collection.json"
+    }, {
+        "rel": ["self"],
+        "href": "static-data/simple-collection/items/0.json"
+    }]
+}
