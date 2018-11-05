@@ -160,8 +160,8 @@
 							}
 							return Promise.reject(response.status);
 						}.bind(this))
-						.then(function(body) {
-							const entity = window.D2L.Hypermedia.Siren.Parse(body);
+						.then(window.D2L.Hypermedia.Siren.Parse)
+						.then(function(entity) {
 							this.update(entityId, resolved, entity);
 							if (bypassCache) {
 								this._invalidationListeners.forEach(function(listener) {
