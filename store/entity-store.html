@@ -5,6 +5,8 @@
 (function() {
 	'use strict';
 
+	function noop() {}
+
 	function EntityMap() {
 		this._store = new Map();
 		this._cleanEntityId = function(entityId) {
@@ -33,6 +35,10 @@
 	window.D2L.Siren = window.D2L.Siren || {};
 
 	window.D2L.Siren.EntityMap = EntityMap;
+
+	function getResponseJson(response) {
+		return response.json();
+	}
 
 	window.D2L.Siren.EntityStore = {
 		_store: new Map(),
@@ -155,11 +161,14 @@
 						headers: headers
 					})
 						.then(function(response) {
-							if (response.ok) {
-								return response.json();
+							if (!response.ok) {
+								return Promise.reject(response.status);
 							}
-							return Promise.reject(response.status);
-						}.bind(this))
+
+							return response;
+						})
+						.then(this._handleCachePriming.bind(this, resolved))
+						.then(getResponseJson)
 						.then(window.D2L.Hypermedia.Siren.Parse)
 						.then(function(entity) {
 							return this.update(entityId, resolved, entity);
@@ -293,7 +302,34 @@
 				this._initContainer(this._listeners, entityId, cacheKey, new Set()).delete(listener);
 			}.bind(this));
 		},
+		_handleCachePriming: function (token, response) {
+			var linkHeaderValues = response.headers && response.headers.get('Link');
+			if (!linkHeaderValues) {
+				return response;
+			}
 
+			var cachePrimers = window.D2L.Siren.EntityStore
+				.parseLinkHeader(linkHeaderValues)
+				.filter(function(link) {
+					return link.rel.indexOf('https://api.brightspace.com/rels/cache-primer') !== -1;
+				});
+
+			if (cachePrimers.length === 0) {
+				return response;
+			}
+
+			function returnResponse() {
+				return response;
+			}
+
+			return Promise
+				.all(cachePrimers.map(function(cachePrimer) {
+					return this
+						.fetch(cachePrimer.href, token, true)
+						.then(noop, noop);
+				}, this))
+				.then(returnResponse, returnResponse);
+		},
 		_notify: function(entityId, cacheKey, entity) {
 			const listenerSet = this._initContainer(this._listeners, entityId, cacheKey, new Set());
 			listenerSet.forEach(function(listener) {

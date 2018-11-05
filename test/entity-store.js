@@ -173,5 +173,115 @@ suite('entity-store', function() {
 				expect(links[0].rel[1]).to.equal('http://example.net/relation/other');
 			});
 		});
+
+		suite('fetches cache primers', function() {
+			var origFetch;
+			setup(function() {
+				origFetch = window.d2lfetch.fetch;
+			});
+
+			test('fetches single cache-primer link', async function() {
+				const fetchedEntityLink = 'static-data/simple-collection/collection.json';
+				const cachePrimedEntityLink = 'static-data/simple-collection/items/0.json';
+
+				sandbox.stub(window.d2lfetch, 'fetch', async function() {
+					if (arguments[0] !== fetchedEntityLink) {
+						return origFetch.apply(window.d2lfetch, arguments);
+					}
+
+					const response = await origFetch.apply(window.d2lfetch, arguments);
+					const headers = new Headers(response.headers);
+					headers.append(
+						'Link',
+						`<${ cachePrimedEntityLink }>; rel="https://api.brightspace.com/rels/cache-primer"`
+					);
+					Object.defineProperty(response, 'headers', {
+						value: headers,
+						writable: false
+					});
+					return response;
+				});
+
+				expect(await window.D2L.Siren.EntityStore.get(fetchedEntityLink, '')).to.be.null;
+				expect(await window.D2L.Siren.EntityStore.get(cachePrimedEntityLink, '')).to.be.null;
+
+				await window.D2L.Siren.EntityStore.fetch(fetchedEntityLink, '');
+
+				expect(await window.D2L.Siren.EntityStore.get(fetchedEntityLink, '')).not.to.be.null;
+				expect(await window.D2L.Siren.EntityStore.get(cachePrimedEntityLink, '')).not.to.be.null;
+			});
+
+			test('fetches multiple cache-primer links', async function() {
+				const fetchedEntityLink = 'static-data/simple-collection/collection.json';
+				const cachePrimedEntityLink = 'static-data/simple-collection/items/0.json';
+				const cachePrimedEntityLink2 = 'static-data/simple-collection/items/1.json';
+
+				sandbox.stub(window.d2lfetch, 'fetch', async function() {
+					if (arguments[0] !== fetchedEntityLink) {
+						return origFetch.apply(window.d2lfetch, arguments);
+					}
+
+					const response = await origFetch.apply(window.d2lfetch, arguments);
+					const headers = new Headers(response.headers);
+					headers.append(
+						'Link',
+						`<${ cachePrimedEntityLink }>; rel="https://api.brightspace.com/rels/cache-primer"`
+					);
+					headers.append(
+						'Link',
+						`<${ cachePrimedEntityLink2 }>; rel="https://api.brightspace.com/rels/cache-primer"`
+					);
+					Object.defineProperty(response, 'headers', {
+						value: headers,
+						writable: false
+					});
+					return response;
+				});
+
+				expect(await window.D2L.Siren.EntityStore.get(fetchedEntityLink, '')).to.be.null;
+				expect(await window.D2L.Siren.EntityStore.get(cachePrimedEntityLink, '')).to.be.null;
+				expect(await window.D2L.Siren.EntityStore.get(cachePrimedEntityLink2, '')).to.be.null;
+
+				await window.D2L.Siren.EntityStore.fetch(fetchedEntityLink, '');
+
+				expect(await window.D2L.Siren.EntityStore.get(fetchedEntityLink, '')).not.to.be.null;
+				expect(await window.D2L.Siren.EntityStore.get(cachePrimedEntityLink, '')).not.to.be.null;
+				expect(await window.D2L.Siren.EntityStore.get(cachePrimedEntityLink2, '')).not.to.be.null;
+			});
+
+			test('expands fetched cache-primer links', async function() {
+				const fetchedEntityLink = 'static-data/simple-collection/collection.json';
+				const cachePrimedEntityLink = 'static-data/simple-collection/items/0.json';
+				const cachePrimedEntityLink2 = 'static-data/simple-collection/items/1.json';
+
+				sandbox.stub(window.d2lfetch, 'fetch', async function() {
+					if (arguments[0] !== fetchedEntityLink) {
+						return origFetch.apply(window.d2lfetch, arguments);
+					}
+
+					const response = await origFetch.apply(window.d2lfetch, arguments);
+					const headers = new Headers(response.headers);
+					headers.append(
+						'Link',
+						`<static-data/simple-collection/cache-primer.json>; rel="https://api.brightspace.com/rels/cache-primer"`
+					);
+					Object.defineProperty(response, 'headers', {
+						value: headers,
+						writable: false
+					});
+					return response;
+				});
+
+				expect(await window.D2L.Siren.EntityStore.get(fetchedEntityLink, '')).to.be.null;
+				expect(await window.D2L.Siren.EntityStore.get(cachePrimedEntityLink, '')).to.be.null;
+				expect(await window.D2L.Siren.EntityStore.get(cachePrimedEntityLink2, '')).to.be.null;
+
+				await window.D2L.Siren.EntityStore.fetch(fetchedEntityLink, '');
+
+				expect(await window.D2L.Siren.EntityStore.get(fetchedEntityLink, '')).not.to.be.null;
+				expect(await window.D2L.Siren.EntityStore.get(cachePrimedEntityLink, '')).not.to.be.null;
+				expect(await window.D2L.Siren.EntityStore.get(cachePrimedEntityLink2, '')).not.to.be.null;
+			});
+		})
 	});
 });
