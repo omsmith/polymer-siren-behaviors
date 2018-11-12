@@ -173,8 +173,10 @@
 							return this._store.get(cacheKey).get(lowerCaseEntityId);
 						}.bind(this))
 						.catch(function(err) {
-							this.setError(entityId, resolved, err);
-							return this._store.get(cacheKey).get(lowerCaseEntityId);
+							return this
+								.setError(entityId, resolved, err).then(function() {
+									return this._store.get(cacheKey).get(lowerCaseEntityId);
+								}.bind(this));
 						}.bind(this));
 
 					this._store.get(cacheKey).set(lowerCaseEntityId, {
