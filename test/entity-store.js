@@ -70,21 +70,26 @@ suite('entity-store', function() {
 		});
 
 		test('get entity returns null if not in store', function() {
-			var entity = window.D2L.Siren.EntityStore.get('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/UNKNOWN1.json', '');
-			expect(entity).to.be.null;
+			return window.D2L.Siren.EntityStore
+				.get('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/UNKNOWN1.json', '')
+				.then(function(entity) {
+					expect(entity).to.be.null;
+				});
 		});
 
-		test('get entity returns entity sync', function(done) {
-			var request = window.D2L.Siren.EntityStore.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/0.json', '');
-			request.then(function() {
-				var entity = window.D2L.Siren.EntityStore.get('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/0.json', '');
-				var description = entity && entity.getSubEntityByClass('description').properties.html;
-				expect(description).to.equal('Proper use of grammar');
-				if (!done.done) {
-					done();
-					done.done = true;
-				}
-			});
+		test('get entity returns entity sync', function() {
+			return window.D2L.Siren.EntityStore
+				.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/0.json', '')
+				.then(function() {
+					return window.D2L.Siren.EntityStore
+						.get('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/0.json', '');
+				})
+				.then(function(entity) {
+					expect(entity).to.exist;
+
+					var description = entity.getSubEntityByClass('description').properties.html;
+					expect(description).to.equal('Proper use of grammar');
+				});
 		});
 
 		test('handles entity error using listener', function(done) {
@@ -102,16 +107,13 @@ suite('entity-store', function() {
 			window.D2L.Siren.EntityStore.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/UNKNOWN1.json', '');
 		});
 
-		test('handles entity error using promise', function(done) {
-			var request = window.D2L.Siren.EntityStore.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/UNKNOWN2.json', '');
-			request.then(function(entity) {
-				expect(entity.status).to.equal('error');
-				expect(entity.error).to.equal(404);
-				if (!done.done) {
-					done();
-					done.done = true;
-				}
-			});
+		test('handles entity error using promise', function() {
+			return window.D2L.Siren.EntityStore
+				.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/UNKNOWN2.json', '')
+				.then(function(entity) {
+					expect(entity.status).to.equal('error');
+					expect(entity.error).to.equal(404);
+				});
 		});
 
 		test('expands embedded entity children', function(done) {
