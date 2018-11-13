@@ -36,6 +36,14 @@
 
 	window.D2L.Siren.EntityMap = EntityMap;
 
+	function checkResponse(response) {
+		if (!response.ok) {
+			return Promise.reject(response.status);
+		}
+
+		return response;
+	}
+
 	function getResponseJson(response) {
 		return response.json();
 	}
@@ -165,13 +173,7 @@
 					const request = window.d2lfetch.fetch(entityId, {
 						headers: headers
 					})
-						.then(function(response) {
-							if (!response.ok) {
-								return Promise.reject(response.status);
-							}
-
-							return response;
-						})
+						.then(checkResponse)
 						.then(this._handleCachePriming.bind(this, resolved))
 						.then(getResponseJson)
 						.then(window.D2L.Hypermedia.Siren.Parse)
