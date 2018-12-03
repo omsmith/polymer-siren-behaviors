@@ -70,7 +70,7 @@
 		},
 
 		addListener: function(entityId, token, listener) {
-			return this._getToken(token).then(function (resolved) {
+			return this._getToken(token).then(function(resolved) {
 				const cacheKey = resolved.cacheKey;
 				const tokenValue = resolved.tokenValue;
 
@@ -87,7 +87,7 @@
 				return (function() {
 					this.removeListener(entityId, resolved, listener);
 				}).bind(this);
-			}.bind(this))
+			}.bind(this));
 		},
 
 		addInvalidationListener: function(listener) {
@@ -104,7 +104,7 @@
 				: Promise.resolve(token);
 
 			return tokenPromise.then(function(tokenValue) {
-				if( !tokenValue ) {
+				if (!tokenValue) {
 					return {
 						cacheKey: '',
 						tokenValue: ''
@@ -112,14 +112,14 @@
 				}
 
 				// Avoid parse work if we've already done it
-				if( typeof tokenValue === 'object' && tokenValue.hasOwnProperty('cacheKey')
+				if (typeof tokenValue === 'object' && tokenValue.hasOwnProperty('cacheKey')
 					&& tokenValue.hasOwnProperty('tokenValue')) {
 					return tokenValue;
 				}
 
 				const tokenParts = tokenValue.split('.');
 
-				if( tokenParts.length < 3 ) {
+				if (tokenParts.length < 3) {
 					return {
 						cacheKey: tokenValue,
 						tokenValue: tokenValue
@@ -130,9 +130,9 @@
 
 				const volatileClaims = ['exp', 'iat', 'jti', 'nbf'];
 				const normalizedClaims = Object.keys(decoded)
-					.filter(function (val) { return volatileClaims.indexOf(val) === -1 })
-					.reduce(function (result, key) {
-						result[key] = decoded[key]
+					.filter(function(val) { return volatileClaims.indexOf(val) === -1; })
+					.reduce(function(result, key) {
+						result[key] = decoded[key];
 						return result;
 					}, {});
 
@@ -214,7 +214,7 @@
 		},
 
 		get: function(entityId, token) {
-			return this._getToken(token).then(function (resolved) {
+			return this._getToken(token).then(function(resolved) {
 				const cacheKey = resolved.cacheKey;
 
 				const entity = this._initContainer(this._store, entityId, cacheKey);
@@ -227,7 +227,7 @@
 		},
 
 		update: function(entityId, token, entity) {
-			return this._getToken(token).then(function (resolved) {
+			return this._getToken(token).then(function(resolved) {
 				const cacheKey = resolved.cacheKey;
 				const lowerCaseEntityId = entityId.toLowerCase();
 
@@ -281,7 +281,7 @@
 		},
 
 		setError: function(entityId, token, error) {
-			return this._getToken(token).then(function (resolved) {
+			return this._getToken(token).then(function(resolved) {
 				const cacheKey = resolved.cacheKey;
 
 				const lowerCaseEntityId = entityId.toLowerCase();
@@ -299,7 +299,7 @@
 		},
 
 		removeListener: function(entityId, token, listener) {
-			return this._getToken(token).then(function (resolved) {
+			return this._getToken(token).then(function(resolved) {
 				const cacheKey = resolved.cacheKey;
 				const tokenValue = resolved.tokenValue;
 
@@ -333,7 +333,7 @@
 				}
 			}.bind(this));
 		},
-		_handleCachePriming: function (token, response) {
+		_handleCachePriming: function(token, response) {
 			var linkHeaderValues = response.headers && response.headers.get('Link');
 			if (!linkHeaderValues) {
 				return response;

@@ -263,7 +263,7 @@ suite('entity-store', function() {
 					const headers = new Headers(response.headers);
 					headers.append(
 						'Link',
-						`<static-data/simple-collection/cache-primer.json>; rel="https://api.brightspace.com/rels/cache-primer"`
+						'<static-data/simple-collection/cache-primer.json>; rel="https://api.brightspace.com/rels/cache-primer"'
 					);
 					Object.defineProperty(response, 'headers', {
 						value: headers,
@@ -282,6 +282,6 @@ suite('entity-store', function() {
 				expect(await window.D2L.Siren.EntityStore.get(cachePrimedEntityLink, '')).not.to.be.null;
 				expect(await window.D2L.Siren.EntityStore.get(cachePrimedEntityLink2, '')).not.to.be.null;
 			});
-		})
+		});
 	});
 });

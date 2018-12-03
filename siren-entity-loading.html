@@ -64,11 +64,12 @@
 			],
 
 			_transition: function(loading, error, fetched) {
+				var self = this;
 				this.async(function() {
-					var maxHeight = this.maxHeight || 10;
-					this._transitionElement(this.$$('.loading'), loading ? maxHeight : null, 'loading', true);
-					this._transitionElement(this.$$('.error'), error ? maxHeight : null, 'error');
-					this._transitionElement(this.$$('.fetched'), fetched ? maxHeight : null, 'fetched');
+					var maxHeight = self.maxHeight || 10;
+					self._transitionElement(self.$$('.loading'), loading ? maxHeight : null, 'loading', true);
+					self._transitionElement(self.$$('.error'), error ? maxHeight : null, 'error');
+					self._transitionElement(self.$$('.fetched'), fetched ? maxHeight : null, 'fetched');
 				}, 1);
 			},
 

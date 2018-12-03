@@ -16,7 +16,7 @@ suite('siren-entity-loading', function() {
 
 	['loading', 'error', 'fetched'].forEach(function(state) {
 		suite(state, function() {
-			[true,false].forEach(function(elementEnabled) {
+			[true, false].forEach(function(elementEnabled) {
 				test(`should ${elementEnabled ? '' : 'not'} show ${state} content when ${elementEnabled ? '' : 'not'} ${state}`, function(done) {
 					if (state !== 'loading') {
 						element.loading = false;
