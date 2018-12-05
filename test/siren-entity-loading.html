@@ -5,16 +5,17 @@
 		<title>siren-entity-loading test</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<script src="../../@babel/polyfill/browser.js"></script>
+		<script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
 
 		<!-- For IE11 -->
 		<script src="../../lie/dist/lie.polyfill.min.js"></script>
 		<!-- For IE11 -->
-		<script src="../../fetch/fetch.js"></script>
+		<script src="../../whatwg-fetch/fetch.js"></script>
 		
-		<script src="../../web-component-tester/browser.js"></script>
+		<script src="../../wct-browser-legacy/browser.js"></script>
 
-		<link rel="import" href="../siren-entity-loading.html">
+		<script type="module" src="../siren-entity-loading.js"></script>
 	</head>
 	<body>
 		<test-fixture id="basic">
@@ -22,7 +23,7 @@
 				<siren-entity-loading></siren-entity-loading>
 			</template>
 		</test-fixture>
-		<script src="siren-entity-loading.js" >
+		<script src="./siren-entity-loading.js">
 
 		</script>
 	</body>
