@@ -1,6 +1,8 @@
 import './entity-store.js';
 // 'use strict';
 
+/*eslint-disable no-unused-vars*/
+
 window.D2L = window.D2L || {};
 window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
 window.D2L.PolymerBehaviors.Siren = window.D2L.PolymerBehaviors.Siren || {};

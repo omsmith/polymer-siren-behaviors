@@ -1,5 +1,5 @@
 import 'd2l-fetch/d2l-fetch.js';
-import 'siren-parser/siren-parser.js';
+import SirenParse from 'siren-parser';
 
 function noop() {}
 
@@ -172,7 +172,7 @@ window.D2L.Siren.EntityStore = {
 					.then(checkResponse)
 					.then(this._handleCachePriming.bind(this, resolved))
 					.then(getResponseJson)
-					.then(window.D2L.Hypermedia.Siren.Parse)
+					.then(SirenParse)
 					.then(function(entity) {
 						return this.update(entityId, resolved, entity);
 					}.bind(this))
@@ -385,8 +385,8 @@ window.D2L.Siren.EntityStore = {
 	// r['meta'] outputs https://example.org/.meta
 	//
 	parseLinkHeader: function(links) {
-		var linkexp = /<[^>]*>\s*(\s*;\s*[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*")))*(,|$)/g;
-		var paramexp = /[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*"))/g;
+		var linkexp = /<[^>]*>\s*(\s*;\s*[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*")))*(,|$)/g; // eslint-disable-line no-useless-escape
+		var paramexp = /[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*"))/g; // eslint-disable-line no-useless-escape
 
 		var matches = links.match(linkexp);
 		var _links = [];

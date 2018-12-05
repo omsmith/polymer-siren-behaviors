@@ -1,4 +1,4 @@
-import 'siren-parser/siren-parser.js';
+import SirenParse from 'siren-parser';
 import './entity-store.js';
 import './action-queue.js';
 
@@ -179,7 +179,7 @@ D2L.PolymerBehaviors.Siren.SirenActionBehaviorImpl = {
 						linkRequests.push(window.D2L.Siren.EntityStore.fetch(link.href, token, true));
 					});
 				}
-				var entity = window.D2L.Hypermedia.Siren.Parse(result.body);
+				var entity = SirenParse(result.body);
 				return Promise.all(linkRequests).then(function() {
 					return window.D2L.Siren.EntityStore.update(url.href, token, entity);
 				});
