@@ -5,7 +5,7 @@
 suite('siren-action-behavior', function() {
 	var element, sandbox;
 
-	var testAction = 	{ // example from https://github.com/kevinswiber/siren
+	var testAction =	 { // example from https://github.com/kevinswiber/siren
 		'name': 'add-item',
 		'title': 'Add Item',
 		'method': 'POST',
@@ -18,7 +18,7 @@ suite('siren-action-behavior', function() {
 		]
 	};
 
-	var testAction2 = 	{
+	var testAction2 =	 {
 		'name': 'delete-item',
 		'title': 'Delete Item',
 		'method': 'DELETE',
