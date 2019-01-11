@@ -29,14 +29,13 @@ D2L.PolymerBehaviors.Siren.EntityLoadingBehaviorImpl = {
 		'_updateListeners(href, token)'
 	],
 
-	ready: function() {
-		this._boundUpdateLoadingState = this._updateLoadingState.bind(this);
-	},
-
 	_updateListeners: function(href, token) {
 		this.error = false;
 		this.loading = true;
 		this.fetched = false;
+		if (!this._boundUpdateLoadingState) {
+			this._boundUpdateLoadingState = this._updateLoadingState.bind(this);
+		}
 		if (this._oldHref && this._oldToken) {
 			window.D2L.Siren.EntityStore.removeListener(this._oldHref, this._oldToken, this._boundUpdateLoadingState);
 		}
