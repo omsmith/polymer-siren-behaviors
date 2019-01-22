@@ -1,4 +1,4 @@
-/* global suite, test, fixture, expect, setup, teardown, sinon, stubWhitelist, flush */
+/* global suite, test, fixture, expect, setup, teardown, sinon, stubWhitelist */
 
 'use strict';
 
@@ -88,7 +88,7 @@ suite('entity-behavior', function() {
 				});
 		});
 
-		test('does not continually call removeListener as details change', function(done) {
+		test('does not continually call removeListener as details change', function() {
 			var remove = sandbox.stub();
 
 			element.removeListener = remove;
@@ -97,10 +97,7 @@ suite('entity-behavior', function() {
 			element.token = 'b';
 			element.token = 'c';
 
-			flush(function() {
-				expect(remove.callCount).to.equal(1);
-				done();
-			});
+			expect(remove.callCount).to.equal(1);
 		});
 	});
 });

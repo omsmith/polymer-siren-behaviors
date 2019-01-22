@@ -64,6 +64,11 @@ D2L.PolymerBehaviors.Siren.EntityBehavior = {
 			return;
 		}
 
+		if (this.removeListener) {
+			this.removeListener();
+			this.removeListener = null;
+		}
+
 		window.D2L.Siren.EntityStore
 			.addListener(href, token, this._entityChangedHandler)
 			.then(function(removeListener) {
@@ -75,11 +80,6 @@ D2L.PolymerBehaviors.Siren.EntityBehavior = {
 				if (this.token !== token) {
 					removeListener();
 					return;
-				}
-
-				if (this.removeListener) {
-					this.removeListener();
-					this.removeListener = null;
 				}
 
 				this.removeListener = removeListener;
