@@ -48,10 +48,6 @@ D2L.PolymerBehaviors.Siren.EntityBehavior = {
 		'_fetchEntity(href, token)'
 	],
 
-	ready: function() {
-		this._entityChangedHandler = this._entityChanged.bind(this);
-	},
-
 	attached: function() {
 		this._fetchEntity(this.href, this.token);
 	},
