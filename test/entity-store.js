@@ -17,17 +17,6 @@ suite('entity-store', function() {
 
 	suite('smoke test', function() {
 
-		test('entity map', function(done) {
-			var testEntityId = 'http://localhost/1?linkedSubEntities=1';
-			var entityId = 'http://localhost/1';
-			var entityMap = new window.D2L.Siren.EntityMap();
-			entityMap.set(testEntityId, { id: 1});
-			var entity = entityMap.get(entityId);
-			expect(entity).not.to.be.null;
-			expect(entity.id).to.equal(1);
-			done();
-		});
-
 		test('can fetch leaf entity using listener', function(done) {
 			window.D2L.Siren.EntityStore.addListener(
 				'static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/0.json',
@@ -43,9 +32,24 @@ suite('entity-store', function() {
 			window.D2L.Siren.EntityStore.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/0.json', '');
 		});
 
-		test('can fetch leaf entity using listener when self link does not match', function(done) {
+		test('can fetch leaf entity using fetched href when self link does not match fetched href', function(done) {
 			window.D2L.Siren.EntityStore.addListener(
 				'static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/0.json?foo=bar',
+				'',
+				function(entity) {
+					var description = entity && entity.getSubEntityByClass('description').properties.html;
+					expect(description).to.equal('Proper use of grammar');
+					if (!done.done) {
+						done();
+						done.done = true;
+					}
+				});
+			window.D2L.Siren.EntityStore.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/0.json?foo=bar', '');
+		});
+
+		test('can fetch leaf entity using self link when self link does not match fetched href', function(done) {
+			window.D2L.Siren.EntityStore.addListener(
+				'static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/0.json',
 				'',
 				function(entity) {
 					var description = entity && entity.getSubEntityByClass('description').properties.html;
@@ -281,6 +285,68 @@ suite('entity-store', function() {
 				expect(await window.D2L.Siren.EntityStore.get(fetchedEntityLink, '')).not.to.be.null;
 				expect(await window.D2L.Siren.EntityStore.get(cachePrimedEntityLink, '')).not.to.be.null;
 				expect(await window.D2L.Siren.EntityStore.get(cachePrimedEntityLink2, '')).not.to.be.null;
+			});
+		});
+
+		suite.only('canonical entity tests', () => {
+
+			var fetch;
+			var origFetch;
+
+			teardown(() => {
+				fetch && fetch.restore();
+			});
+
+			setup(function() {
+				origFetch = window.d2lfetch.fetch;
+				fetch = sinon.stub(window.d2lfetch, 'fetch');
+			});
+
+			test('can fetch leaf entity that contains query parameters in entity href', function(done) {
+
+				fetch.withArgs('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/1.json?foo=bar').returns(
+					new Promise(function(resolve) {
+						origFetch.apply(window.d2lfetch, ['static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/1.json']).then(function(response) {
+							resolve(response);
+						});
+					})
+				);
+
+				window.D2L.Siren.EntityStore.addListener(
+					'static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/1.json?zinglewaga=zinglezoo',
+					'',
+					function() {
+						throw new Error('unexpected listener called');
+					});
+				window.D2L.Siren.EntityStore.addListener(
+					'static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/1.json?foo=bar',
+					'',
+					function(entity) {
+						var description = entity && entity.getSubEntityByClass('description').properties.html;
+						expect(description).to.equal('Proper use of grammar should allow query parameters');
+						done();
+					});
+				window.D2L.Siren.EntityStore.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/1.json?foo=bar', '');
+			});
+
+			test.only('can fetch leaf entity that contains canonical self relation', function(done) {
+				fetch.withArgs('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/2.json?foo=bar').returns(
+					new Promise(function(resolve) {
+						origFetch.apply(window.d2lfetch, ['static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/2.json']).then(function(response) {
+							resolve(response);
+						});
+					})
+				);
+
+				window.D2L.Siren.EntityStore.addListener(
+					'static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/2.json',
+					'',
+					function(entity) {
+						var description = entity && entity.getSubEntityByClass('description').properties.html;
+						expect(description).to.equal('Proper use of grammar should allow query parameters');
+						done();
+					});
+				window.D2L.Siren.EntityStore.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/2.json?foo=bar', '');
 			});
 		});
 	});
