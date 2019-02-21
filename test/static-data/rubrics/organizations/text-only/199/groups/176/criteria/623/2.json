@@ -19,7 +19,7 @@
               {
                 "name": "update",
                 "method": "PUT",
-                "href": "static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/1.json?foo=bar",
+                "href": "static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/2.json?foo=bar",
                 "fields": [
                   {
                     "type": "text",
@@ -51,7 +51,7 @@
               {
                 "name": "update",
                 "method": "PUT",
-                "href": "static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/1.json?foo=bar",
+                "href": "static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/2.json?foo=bar",
                 "fields": [
                   {
                     "type": "hidden",
