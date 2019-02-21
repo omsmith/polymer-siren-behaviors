@@ -1,0 +1,91 @@
+{
+    "class": [
+        "criterion-cell"
+    ],
+    "entities": [
+        {
+            "class": [
+                "richtext",
+                "description"
+            ],
+            "rel": [
+                "item"
+            ],
+            "properties": {
+                "text": "Proper use of grammar should allow query parameters",
+                "html": "Proper use of grammar should allow query parameters"
+            },
+            "actions": [
+              {
+                "name": "update",
+                "method": "PUT",
+                "href": "static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/1.json?foo=bar",
+                "fields": [
+                  {
+                    "type": "text",
+                    "name": "description",
+                    "value": "Proper use of grammar should allow query parameters"
+                  },
+                  {
+                    "type": "hidden",
+                    "name": "feedback",
+                    "value": "5 stars for proper use of grammar!"
+                  }
+                ]
+              }
+            ]
+        },
+        {
+            "class": [
+                "richtext",
+                "feedback"
+            ],
+            "rel": [
+                "item"
+            ],
+            "properties": {
+                "text": "5 stars for proper use of grammar!",
+                "html": "5 stars for proper use of grammar!"
+            },
+            "actions": [
+              {
+                "name": "update",
+                "method": "PUT",
+                "href": "static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/1.json?foo=bar",
+                "fields": [
+                  {
+                    "type": "hidden",
+                    "name": "description",
+                    "value": "Proper use of grammar should allow query parameters"
+                  },
+                  {
+                    "type": "text",
+                    "name": "feedback",
+                    "value": "5 stars for proper use of grammar!"
+                  }
+                ]
+              }
+            ]
+        }
+    ],
+    "links": [
+        {
+            "rel": [
+                "https://rubrics.api.brightspace.com/rels/level"
+            ],
+            "href": "static-data/rubrics/organizations/text-only/199/groups/176/levels/1476.json"
+        },
+        {
+            "rel": [
+                "self"
+            ],
+            "href": "static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/2.json"
+        },
+        {
+            "rel": [
+                "up"
+            ],
+            "href": "static-data/rubrics/organizations/text-only/199/groups/176/criteria/623.json"
+        }
+    ]
+}

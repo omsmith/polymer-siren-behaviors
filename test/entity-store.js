@@ -288,7 +288,7 @@ suite('entity-store', function() {
 			});
 		});
 
-		suite.only('canonical entity tests', () => {
+		suite('canonical entity tests', () => {
 
 			var fetch;
 			var origFetch;
@@ -329,7 +329,7 @@ suite('entity-store', function() {
 				window.D2L.Siren.EntityStore.fetch('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/1.json?foo=bar', '');
 			});
 
-			test.only('can fetch leaf entity that contains canonical self relation', function(done) {
+			test('can fetch leaf entity that contains canonical self relation', function(done) {
 				fetch.withArgs('static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/2.json?foo=bar').returns(
 					new Promise(function(resolve) {
 						origFetch.apply(window.d2lfetch, ['static-data/rubrics/organizations/text-only/199/groups/176/criteria/623/2.json']).then(function(response) {

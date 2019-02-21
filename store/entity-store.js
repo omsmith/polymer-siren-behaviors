@@ -6,8 +6,6 @@ function noop() {}
 window.D2L = window.D2L || {};
 window.D2L.Siren = window.D2L.Siren || {};
 
-
-
 function checkResponse(response) {
 	if (!response.ok) {
 		return Promise.reject(response.status);
