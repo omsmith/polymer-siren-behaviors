@@ -3,34 +3,8 @@ import SirenParse from 'siren-parser';
 
 function noop() {}
 
-function EntityMap() {
-	this._store = new Map();
-	this._cleanEntityId = function(entityId) {
-		return (entityId || '').split('?')[0];
-	};
-}
-
-EntityMap.prototype.set = function(entityId, value) {
-	this._store.set(this._cleanEntityId(entityId), value);
-	return this;
-};
-
-EntityMap.prototype.get = function(entityId) {
-	return this._store.get(this._cleanEntityId(entityId));
-};
-
-EntityMap.prototype.has = function(entityId) {
-	return this._store.has(this._cleanEntityId(entityId));
-};
-
-EntityMap.prototype.delete = function(entityId) {
-	return this._store.delete(this._cleanEntityId(entityId));
-};
-
 window.D2L = window.D2L || {};
 window.D2L.Siren = window.D2L.Siren || {};
-
-window.D2L.Siren.EntityMap = EntityMap;
 
 function checkResponse(response) {
 	if (!response.ok) {
@@ -56,7 +30,7 @@ window.D2L.Siren.EntityStore = {
 		const lowerCaseEntityId = entityId.toLowerCase();
 
 		if (!map.has(lowerCaseCacheKey)) {
-			map.set(lowerCaseCacheKey, new EntityMap());
+			map.set(lowerCaseCacheKey, new Map());
 		}
 		const entityMap = map.get(lowerCaseCacheKey);
 		if (init && !entityMap.has(lowerCaseEntityId)) {
