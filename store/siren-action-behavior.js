@@ -131,7 +131,7 @@ D2L.PolymerBehaviors.Siren.SirenActionBehaviorImpl = {
 
 	performSirenAction: function(action, fields, immediate) {
 		var self = this;
-		return this._getToken(this.token)
+		return window.D2L.Siren.EntityStore.getToken(this.token)
 		.then(function(resolved) {
 			var tokenValue = resolved.tokenValue;
 			return !immediate ? window.D2L.Siren.ActionQueue.enqueue(function() {
@@ -189,54 +189,7 @@ D2L.PolymerBehaviors.Siren.SirenActionBehaviorImpl = {
 					return window.D2L.Siren.EntityStore.update(url.href, token, entity);
 				});
 			});
-	},
-
-	_getToken: function(token) {
-		const tokenPromise = (typeof (token) === 'function')
-			? token()
-			: Promise.resolve(token);
-
-		return tokenPromise.then(function(tokenValue) {
-			if (!tokenValue) {
-				return {
-					cacheKey: '',
-					tokenValue: ''
-				};
-			}
-
-			// Avoid parse work if we've already done it
-			if (typeof tokenValue === 'object' && tokenValue.hasOwnProperty('cacheKey')
-				&& tokenValue.hasOwnProperty('tokenValue')) {
-				return tokenValue;
-			}
-
-			const tokenParts = tokenValue.split('.');
-
-			if (tokenParts.length < 3) {
-				return {
-					cacheKey: tokenValue,
-					tokenValue: tokenValue
-				};
-			}
-
-			const decoded = JSON.parse(atob(tokenParts[1]).toString());
-
-			const volatileClaims = ['exp', 'iat', 'jti', 'nbf'];
-			const normalizedClaims = Object.keys(decoded)
-				.filter(function(val) { return volatileClaims.indexOf(val) === -1; })
-				.reduce(function(result, key) {
-					result[key] = decoded[key];
-					return result;
-				}, {});
-
-			const cacheKey = btoa(JSON.stringify(normalizedClaims));
-
-			return {
-				cacheKey: cacheKey.toLowerCase(),
-				tokenValue: tokenValue
-			};
-		});
-	},
+	}
 };
 
 /** @polymerBehavior */
