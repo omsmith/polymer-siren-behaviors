@@ -132,13 +132,12 @@ D2L.PolymerBehaviors.Siren.SirenActionBehaviorImpl = {
 	performSirenAction: function(action, fields, immediate) {
 		var self = this;
 		return window.D2L.Siren.EntityStore.getToken(this.token)
-		.then(function(resolved) {
-			var tokenValue = resolved.tokenValue;
-			return !immediate ? window.D2L.Siren.ActionQueue.enqueue(function() {
-				return self._performSirenAction(action, fields, tokenValue);
-			}) : self._performSirenAction(action, fields, tokenValue);
-		}.bind(this));
-
+			.then(function(resolved) {
+				var tokenValue = resolved.tokenValue;
+				return !immediate ? window.D2L.Siren.ActionQueue.enqueue(function() {
+					return self._performSirenAction(action, fields, tokenValue);
+				}) : self._performSirenAction(action, fields, tokenValue);
+			}.bind(this));
 	},
 
 	_performSirenAction: function(action, fields, tokenValue) {
