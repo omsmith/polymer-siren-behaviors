@@ -152,7 +152,9 @@ suite('siren-action-behavior', function() {
 				})
 			);
 			var firstCall = element.performSirenAction(testAction).then(function() {
-				expect(fetchStub.callCount).to.equal(1);
+				setTimeout(function() {
+					expect(fetchStub.callCount).to.equal(1);
+				});
 			});
 			element.performSirenAction(testAction2);
 			return firstCall;
@@ -172,7 +174,9 @@ suite('siren-action-behavior', function() {
 				})
 			);
 			var firstCall = element.performSirenAction(testAction).then(function() {
-				expect(fetchStub.callCount).to.equal(2);
+				setTimeout(function() {
+					expect(fetchStub.callCount).to.equal(2);
+				});
 			});
 			element.performSirenAction(testAction2, null, true);
 			return firstCall;
