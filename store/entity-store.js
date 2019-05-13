@@ -55,7 +55,7 @@ window.D2L.Siren.EntityStore = {
 			registrations.get(listener).add(tokenValue);
 
 			return (function() {
-				this.removeListener(entityId, resolved, listener);
+				this._removeListenerWithResolvedToken(entityId, resolved, listener);
 			}).bind(this);
 		}.bind(this));
 	},
@@ -276,38 +276,8 @@ window.D2L.Siren.EntityStore = {
 	},
 
 	removeListener: function(entityId, token, listener) {
-		return this.getToken(token).then(function(resolved) {
-			const cacheKey = resolved.cacheKey;
-			const tokenValue = resolved.tokenValue;
-
-			if (!entityId || typeof cacheKey !== 'string' || typeof listener !== 'function' || !this._listeners) {
-				return;
-			}
-
-			const registrations = this._initContainer(this._listeners, entityId, cacheKey, new Map());
-
-			const tokenValues = registrations.get(listener);
-			if (!tokenValues) {
-				return;
-			}
-
-			// try to remove this specific registration, since a listener could be
-			// registered with multiple tokens (hopefully temporarily) despite sharing the same
-			// cache key (which is an internal detail)
-			if (!tokenValues.delete(tokenValue)) {
-				// we weren't aware of this particularly tokenValue for this listener, so
-				// assuemedly the component called removeListener directly with its latest
-				// values instead of the "removeListener" function returned by addListener.
-				// component is probably unregistering, so remove the listener entirely
-				registrations.delete(listener);
-				return;
-			}
-
-			// no registrations left for this listener, remove it from the list
-			if (tokenValues.size === 0) {
-				registrations.delete(listener);
-				return;
-			}
+		return this.getToken(token).then(function(resolver) {
+			return this._removeListenerWithResolvedToken(entityId, resolver, listener);
 		}.bind(this));
 	},
 	_handleCachePriming: function(token, response) {
@@ -351,7 +321,39 @@ window.D2L.Siren.EntityStore = {
 			listener(null, error);
 		});
 	},
+	_removeListenerWithResolvedToken: function(entityId, resolved, listener) {
+		const cacheKey = resolved.cacheKey;
+		const tokenValue = resolved.tokenValue;
 
+		if (!entityId || typeof cacheKey !== 'string' || typeof listener !== 'function' || !this._listeners) {
+			return;
+		}
+
+		const registrations = this._initContainer(this._listeners, entityId, cacheKey, new Map());
+
+		const tokenValues = registrations.get(listener);
+		if (!tokenValues) {
+			return;
+		}
+
+		// try to remove this specific registration, since a listener could be
+		// registered with multiple tokens (hopefully temporarily) despite sharing the same
+		// cache key (which is an internal detail)
+		if (!tokenValues.delete(tokenValue)) {
+			// we weren't aware of this particularly tokenValue for this listener, so
+			// assuemedly the component called removeListener directly with its latest
+			// values instead of the "removeListener" function returned by addListener.
+			// component is probably unregistering, so remove the listener entirely
+			registrations.delete(listener);
+			return;
+		}
+
+		// no registrations left for this listener, remove it from the list
+		if (tokenValues.size === 0) {
+			registrations.delete(listener);
+			return;
+		}
+	},
 	clear: function() {
 		this._store = new Map();
 		this._listeners = new Map();
