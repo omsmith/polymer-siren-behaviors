@@ -72,7 +72,7 @@ suite('entity-behavior', function() {
 			element.removeListener = null;
 
 			var add = sandbox.spy(window.D2L.Siren.EntityStore, 'addListener');
-			var remove = sandbox.spy(window.D2L.Siren.EntityStore, 'removeListener');
+			var remove = sandbox.spy(window.D2L.Siren.EntityStore, '_removeListenerWithResolvedToken');
 
 			var tokenPayload = btoa(JSON.stringify({ sub: 123 }));
 
