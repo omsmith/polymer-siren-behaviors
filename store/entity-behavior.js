@@ -37,6 +37,13 @@ D2L.PolymerBehaviors.Siren.EntityBehavior = {
 			notify: true,
 			observer: '_onEntityChanged',
 		},
+		/**
+		* Whether the cache should be disabled for the fetching of this entity
+		*/
+		disableEntityCache: {
+			type: Boolean,
+			value: false
+		},
 
 		_entityChangedHandler: {
 			type: Object,
@@ -83,7 +90,7 @@ D2L.PolymerBehaviors.Siren.EntityBehavior = {
 				}
 
 				this.removeListener = removeListener;
-				window.D2L.Siren.EntityStore.fetch(href, token);
+				window.D2L.Siren.EntityStore.fetch(href, token, this.disableEntityCache);
 			}.bind(this));
 	},
 
