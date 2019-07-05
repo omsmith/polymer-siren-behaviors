@@ -1,5 +1,6 @@
 import 'd2l-fetch/d2l-fetch.js';
 import SirenParse from 'siren-parser';
+import './whitelist-behavior.js';
 
 function noop() {}
 
@@ -125,6 +126,9 @@ window.D2L.Siren.EntityStore = {
 	fetch: function(entityId, token, bypassCache) {
 		if (!entityId) {
 			return Promise.reject(new Error('Cannot fetch undefined entityId'));
+		}
+		if (!window.D2L.Siren.WhitelistBehavior.isWhitelisted(entityId)) {
+			return Promise.reject(new Error('Invalid request url; must be a valid whitelisted domain.'));
 		}
 		return this.getToken(token).then(function(resolved) {
 
