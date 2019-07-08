@@ -9,9 +9,11 @@ suite('entity-store', function() {
 	setup(function() {
 		sandbox = sinon.sandbox.create();
 		window.D2L.Siren.EntityStore.clear();
+		window.D2L.Siren.WhitelistBehavior._testMode(true);
 	});
 
 	teardown(function() {
+		window.D2L.Siren.WhitelistBehavior._testMode(false);
 		sandbox.restore();
 	});
 

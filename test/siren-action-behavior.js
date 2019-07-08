@@ -76,10 +76,12 @@ suite('siren-action-behavior', function() {
 		sandbox = sinon.sandbox.create();
 		element = fixture('basic');
 		element.token = 'foozleberries';
+		window.D2L.Siren.WhitelistBehavior._testMode(true);
 		stubWhitelist();
 	});
 
 	teardown(function() {
+		window.D2L.Siren.WhitelistBehavior._testMode(false);
 		sandbox.restore();
 	});
 
