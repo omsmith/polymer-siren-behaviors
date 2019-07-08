@@ -9,6 +9,7 @@ suite('entity-behavior', function() {
 	setup(function(done) {
 		sandbox = sinon.sandbox.create();
 		element = fixture('basic');
+		window.D2L.Siren.WhitelistBehavior._testMode(true);
 
 		function waitForLoad(e) {
 			if (e.detail.entity.getLinkByRel('self').href === 'static-data/199.json') {
@@ -23,6 +24,7 @@ suite('entity-behavior', function() {
 	});
 
 	teardown(function() {
+		window.D2L.Siren.WhitelistBehavior._testMode(false);
 		sandbox.restore();
 	});
 
