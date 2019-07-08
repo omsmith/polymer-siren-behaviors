@@ -12,11 +12,11 @@ window.D2L.Siren.WhitelistBehavior = {
 	},
 
 	_testMode: function(isTestMode) {
-		this._inTestMode = isTestMode;	
+		this._inTestMode = isTestMode;
 	},
 
 	isWhitelisted: function(url) {
-		if( this._inTestMode){
+		if (this._inTestMode) {
 			return true;
 		}
 		const whitelistedDomains = [
