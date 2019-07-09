@@ -22,6 +22,6 @@ window.D2L.Siren.WhitelistBehavior = {
 			return true;
 		}
 
-		return urlTrust.shuldTrust(url);
+		return urlTrust.shouldTrust(url);
 	}
 };
